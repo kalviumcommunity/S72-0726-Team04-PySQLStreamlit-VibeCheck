@@ -617,11 +617,12 @@ tab1, tab2, tab3, tab4, tab5 = st.tabs([
 # Shared Mastercard Plotly Styling Function
 def apply_mc_chart_style(fig):
     fig.update_layout(
+        title=None,
+        legend_title_text="",
         paper_bgcolor="rgba(0,0,0,0)",
         plot_bgcolor="#FFFFFF",
         font=dict(family="Sofia Sans, sans-serif", color="#141413", size=13),
-        title_font=dict(size=18, color="#141413", family="Sofia Sans"),
-        margin=dict(t=30, b=30, l=30, r=30),
+        margin=dict(t=15, b=25, l=25, r=25),
         xaxis=dict(gridcolor="#F3F0EE", zerolinecolor="#F3F0EE"),
         yaxis=dict(gridcolor="#F3F0EE", zerolinecolor="#F3F0EE")
     )
