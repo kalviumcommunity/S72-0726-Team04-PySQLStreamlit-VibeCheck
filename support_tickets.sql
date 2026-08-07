@@ -6,7 +6,8 @@ CREATE TABLE IF NOT EXISTS "support_tickets" (
     "priority" TEXT,
     "resolution_hours" FLOAT,
     "status" TEXT,
-    "assigned_team" TEXT
+    "assigned_team" TEXT,
+    FOREIGN KEY ("employee_id") REFERENCES "employees"("employee_id")
 );
 
 INSERT INTO "support_tickets" ("ticket_id", "employee_id", "created_date", "issue_type", "priority", "resolution_hours", "status", "assigned_team") VALUES

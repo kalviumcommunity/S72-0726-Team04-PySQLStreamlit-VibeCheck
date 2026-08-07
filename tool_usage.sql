@@ -6,7 +6,8 @@ CREATE TABLE IF NOT EXISTS "tool_usage" (
     "login_count" INTEGER,
     "active_minutes" INTEGER,
     "feature_used" TEXT,
-    "device_type" TEXT
+    "device_type" TEXT,
+    FOREIGN KEY ("employee_id") REFERENCES "employees"("employee_id")
 );
 
 INSERT INTO "tool_usage" ("usage_id", "employee_id", "date", "tool_name", "login_count", "active_minutes", "feature_used", "device_type") VALUES

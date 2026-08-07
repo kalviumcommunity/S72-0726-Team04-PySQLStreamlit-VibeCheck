@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS "onboarding" (
-    "employee_id" INTEGER PRIMARY KEY,
+    "employee_id" INTEGER PRIMARY KEY REFERENCES "employees"("employee_id"),
     "orientation_completed" TEXT,
     "training_completion_percent" FLOAT,
     "onboarding_days" INTEGER,

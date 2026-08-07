@@ -1,5 +1,10 @@
 import pandas as pd
+import numpy as np
 import math
+from pathlib import Path
+
+BASE_DIR = Path(__file__).parent
+DATA_DIR = BASE_DIR / "data"
 
 def generate_table_sql(df, table_name):
     # Map pandas dtypes to postgres dtypes
@@ -14,11 +19,11 @@ def generate_table_sql(df, table_name):
     columns = []
     for col, dtype in zip(df.columns, df.dtypes):
         col_type = mapping.get(str(dtype), 'TEXT')
-        # special case for primary keys based on table name
+        # Special case for primary keys based on table name
         if table_name == 'employees' and col == 'employee_id':
             col_type += ' PRIMARY KEY'
         elif table_name == 'onboarding' and col == 'employee_id':
-            col_type += ' PRIMARY KEY' # assuming 1:1
+            col_type += ' PRIMARY KEY REFERENCES "employees"("employee_id")'
         elif table_name == 'support_tickets' and col == 'ticket_id':
             col_type += ' PRIMARY KEY'
         elif table_name == 'tool_usage' and col == 'usage_id':
@@ -26,6 +31,9 @@ def generate_table_sql(df, table_name):
             
         columns.append(f'"{col}" {col_type}')
     
+    if table_name in ['support_tickets', 'tool_usage']:
+        columns.append('FOREIGN KEY ("employee_id") REFERENCES "employees"("employee_id")')
+
     create_stmt = f'CREATE TABLE IF NOT EXISTS "{table_name}" (\n    ' + ',\n    '.join(columns) + '\n);\n'
     return create_stmt
 
@@ -33,19 +41,20 @@ def generate_insert_sql(df, table_name):
     columns = '", "'.join(df.columns)
     columns = f'"{columns}"'
     
-    # Handle NaN/NaT
-    df = df.fillna('NULL_MARKER')
-    
     values_list = []
     for _, row in df.iterrows():
         row_vals = []
         for val in row:
-            if val == 'NULL_MARKER':
+            if pd.isna(val) or val is None or val == '':
                 row_vals.append('NULL')
-            elif isinstance(val, (int, float)):
+            elif isinstance(val, (int, np.integer)):
                 row_vals.append(str(val))
+            elif isinstance(val, (float, np.floating)):
+                if math.isnan(val):
+                    row_vals.append('NULL')
+                else:
+                    row_vals.append(str(val))
             else:
-                # Escape quotes
                 val_str = str(val).replace("'", "''")
                 row_vals.append(f"'{val_str}'")
         values_list.append("(" + ", ".join(row_vals) + ")")
@@ -59,23 +68,33 @@ def generate_insert_sql(df, table_name):
     
     return inserts
 
-files = [
-    'employees.csv',
-    'onboarding.csv',
-    'support_tickets.csv',
-    'tool_usage.csv'
-]
+def main():
+    files = [
+        'employees.csv',
+        'onboarding.csv',
+        'support_tickets.csv',
+        'tool_usage.csv'
+    ]
 
-for f in files:
-    table_name = f.replace('.csv', '')
-    df = pd.read_csv(f'd:/Coding/Projects/VibeCheck/S72-0726-Team04-PySQLStreamlit-VibeCheck/data/{f}')
-    
-    create_sql = generate_table_sql(df, table_name)
-    insert_sqls = generate_insert_sql(df, table_name)
-    
-    with open(f'd:/Coding/Projects/VibeCheck/S72-0726-Team04-PySQLStreamlit-VibeCheck/{table_name}.sql', 'w', encoding='utf-8') as out:
-        out.write(create_sql + '\n')
-        for ins in insert_sqls:
-            out.write(ins + '\n')
+    for f in files:
+        table_name = f.replace('.csv', '')
+        csv_path = DATA_DIR / f
+        if not csv_path.exists():
+            print(f"Warning: {csv_path} does not exist. Skipping.")
+            continue
 
-print("SQL files generated.")
+        df = pd.read_csv(csv_path)
+        create_sql = generate_table_sql(df, table_name)
+        insert_sqls = generate_insert_sql(df, table_name)
+        
+        out_path = BASE_DIR / f'{table_name}.sql'
+        with open(out_path, 'w', encoding='utf-8') as out:
+            out.write(create_sql + '\n')
+            for ins in insert_sqls:
+                out.write(ins + '\n')
+        print(f"Generated {out_path.name} ({len(df)} records)")
+
+    print("SQL files generation complete.")
+
+if __name__ == '__main__':
+    main()
