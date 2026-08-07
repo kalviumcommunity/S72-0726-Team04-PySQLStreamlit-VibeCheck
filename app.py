@@ -57,6 +57,37 @@ st.markdown("""
         font-weight: 600 !important;
     }
 
+    /* Streamlit Selectbox & Input Custom Styling */
+    div[data-baseweb="select"] > div {
+        border-radius: 16px !important;
+        border: 1.5px solid rgba(20, 20, 19, 0.12) !important;
+        background-color: #FFFFFF !important;
+        color: var(--mc-ink) !important;
+        font-weight: 500 !important;
+    }
+
+    div[data-baseweb="select"] > div:hover {
+        border-color: var(--mc-light-orange) !important;
+    }
+
+    /* Streamlit Slider Accent Color */
+    div[data-baseweb="slider"] [role="slider"] {
+        background-color: var(--mc-signal-orange) !important;
+        border-color: var(--mc-signal-orange) !important;
+    }
+
+    div[aria-valuenow] {
+        color: var(--mc-signal-orange) !important;
+    }
+
+    /* Streamlit Alert Banners */
+    div[data-testid="stAlert"] {
+        border-radius: 16px !important;
+        border: 1px solid rgba(20, 20, 19, 0.1) !important;
+        background-color: #FFFFFF !important;
+        box-shadow: 0px 4px 16px rgba(0,0,0,0.02) !important;
+    }
+
     /* Mastercard Floating Nav Bar */
     .mc-nav-floating {
         background: #FFFFFF;
@@ -201,7 +232,7 @@ st.markdown("""
         color: var(--mc-slate) !important;
     }
 
-    /* Mastercard Circular Portrait Cards & Satellite Micro-CTAs */
+    /* Mastercard Circular Portrait Cards & Constellation Orbits */
     .mc-constellation-container {
         display: flex;
         justify-content: space-around;
@@ -212,12 +243,24 @@ st.markdown("""
         margin-bottom: 32px;
     }
 
+    .mc-orbit-line {
+        position: absolute;
+        top: 98px;
+        left: 10%;
+        width: 80%;
+        height: 2px;
+        background: linear-gradient(90deg, transparent 0%, var(--mc-light-orange) 30%, var(--mc-signal-orange) 50%, var(--mc-light-orange) 70%, transparent 100%);
+        z-index: 0;
+        opacity: 0.45;
+    }
+
     .mc-portrait-card {
         display: flex;
         flex-direction: column;
         align-items: center;
         text-align: center;
         position: relative;
+        z-index: 1;
     }
 
     .mc-circle-frame {
@@ -518,7 +561,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ---------------------------------------------------------
-# Mastercard Circular Department Constellation (Clean SVG Icons)
+# Mastercard Circular Department Constellation (SVG Vector Orbits)
 # ---------------------------------------------------------
 st.markdown('<div class="mc-eyebrow" style="margin-top: 10px;"><span class="mc-eyebrow-dot"></span>DEPARTMENT ORBITS</div>', unsafe_allow_html=True)
 
@@ -532,6 +575,7 @@ arrow_svg = '<svg class="mc-satellite-svg" viewBox="0 0 24 24"><line x1="5" y1="
 
 st.markdown(f"""
 <div class="mc-constellation-container">
+    <div class="mc-orbit-line"></div>
     <div class="mc-portrait-card">
         <div class="mc-circle-frame">
             {rd_icon}
