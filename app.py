@@ -11,8 +11,8 @@ import streamlit as st
 # Page Configuration & Mastercard Design System
 # ---------------------------------------------------------
 st.set_page_config(
-    page_title="VibeCheck | Mastercard Editorial Analytics",
-    page_icon="🔴",
+    page_title="VibeCheck | Operational Analytics Platform",
+    page_icon="V",
     layout="wide",
     initial_sidebar_state="expanded"
 )
@@ -33,8 +33,6 @@ st.markdown("""
         --mc-slate: #696969;
         --mc-link-blue: #3860BE;
         --mc-watermark: #E8E2DA;
-        --mc-red: #EB001B;
-        --mc-yellow: #F79E1B;
     }
 
     html, body, [data-testid="stAppViewContainer"] {
@@ -63,7 +61,7 @@ st.markdown("""
     .mc-nav-floating {
         background: #FFFFFF;
         border-radius: 999px;
-        padding: 12px 32px;
+        padding: 14px 36px;
         margin-bottom: 28px;
         box-shadow: 0px 4px 24px rgba(0, 0, 0, 0.04);
         display: flex;
@@ -72,45 +70,25 @@ st.markdown("""
         border: 1px solid rgba(20, 20, 19, 0.06);
     }
 
-    .mc-brand-group {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-    }
-
-    .mc-circles-logo {
-        display: flex;
-        align-items: center;
-        position: relative;
-        width: 36px;
-        height: 24px;
-    }
-
-    .mc-circle-left {
-        width: 22px;
-        height: 22px;
-        background-color: var(--mc-red);
-        border-radius: 50%;
-        position: absolute;
-        left: 0;
-    }
-
-    .mc-circle-right {
-        width: 22px;
-        height: 22px;
-        background-color: var(--mc-yellow);
-        border-radius: 50%;
-        position: absolute;
-        right: 0;
-        opacity: 0.92;
-        mix-blend-mode: multiply;
-    }
-
-    .mc-brand-title {
-        font-size: 1.4rem;
+    .mc-brand-text {
+        font-size: 1.45rem;
         font-weight: 700;
-        letter-spacing: -0.02em;
+        letter-spacing: -0.03em;
         color: var(--mc-ink);
+        text-transform: uppercase;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .mc-brand-badge {
+        font-size: 0.68rem;
+        font-weight: 700;
+        background: var(--mc-ink);
+        color: var(--mc-canvas);
+        padding: 3px 8px;
+        border-radius: 999px;
+        letter-spacing: 0.08em;
     }
 
     .mc-status-chip {
@@ -118,16 +96,19 @@ st.markdown("""
         color: var(--mc-ink);
         border-radius: 999px;
         padding: 6px 18px;
-        font-size: 0.85rem;
+        font-size: 0.82rem;
         font-weight: 500;
         border: 1px solid rgba(20, 20, 19, 0.1);
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
     }
 
     /* Mastercard Hero Stadium Frame (40px Radius) */
     .mc-hero-stadium {
         background-color: var(--mc-lifted);
         border-radius: 40px;
-        padding: 48px 56px;
+        padding: 52px 60px;
         margin-bottom: 36px;
         position: relative;
         overflow: hidden;
@@ -139,7 +120,7 @@ st.markdown("""
         position: absolute;
         right: -20px;
         bottom: -30px;
-        font-size: 8rem;
+        font-size: 8.5rem;
         font-weight: 700;
         color: var(--mc-watermark);
         letter-spacing: -0.04em;
@@ -187,7 +168,7 @@ st.markdown("""
         margin-bottom: 28px;
     }
 
-    /* Mastercard Metric Pill Cards (20px & Pill Radius) */
+    /* Mastercard Metric Cards (20px Radius) */
     div[data-testid="stMetric"] {
         background-color: #FFFFFF !important;
         border: 1px solid rgba(20, 20, 19, 0.08) !important;
@@ -213,7 +194,7 @@ st.markdown("""
     }
 
     div[data-testid="stMetricLabel"] {
-        font-size: 0.85rem !important;
+        font-size: 0.82rem !important;
         font-weight: 700 !important;
         text-transform: uppercase !important;
         letter-spacing: 0.04em !important;
@@ -226,7 +207,7 @@ st.markdown("""
         justify-content: space-around;
         align-items: center;
         gap: 24px;
-        padding: 32px 0;
+        padding: 28px 0;
         position: relative;
         margin-bottom: 32px;
     }
@@ -249,13 +230,22 @@ st.markdown("""
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 3rem;
         position: relative;
         transition: transform 0.25s ease;
     }
 
     .mc-circle-frame:hover {
         transform: scale(1.05);
+    }
+
+    .mc-circle-svg-icon {
+        width: 44px;
+        height: 44px;
+        stroke: var(--mc-ink);
+        fill: none;
+        stroke-width: 1.8;
+        stroke-linecap: round;
+        stroke-linejoin: round;
     }
 
     .mc-satellite-cta {
@@ -271,9 +261,15 @@ st.markdown("""
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 1rem;
         color: var(--mc-ink);
-        font-weight: 700;
+    }
+
+    .mc-satellite-svg {
+        width: 16px;
+        height: 16px;
+        stroke: var(--mc-ink);
+        fill: none;
+        stroke-width: 2.2;
     }
 
     .mc-portrait-title {
@@ -443,15 +439,15 @@ except Exception as e:
     st.stop()
 
 # ---------------------------------------------------------
-# Sidebar & Mastercard Editorial Filters
+# Sidebar & Clean Branding
 # ---------------------------------------------------------
 st.sidebar.markdown("""
-<div style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px;">
-    <div style="position: relative; width: 32px; height: 22px;">
-        <div style="width: 20px; height: 20px; background: #EB001B; border-radius: 50%; position: absolute; left: 0;"></div>
-        <div style="width: 20px; height: 20px; background: #F79E1B; border-radius: 50%; position: absolute; right: 0; opacity: 0.9;"></div>
+<div style="margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid rgba(20, 20, 19, 0.08);">
+    <div style="font-size: 1.5rem; font-weight: 700; letter-spacing: -0.04em; color: #141413; display: flex; align-items: center; gap: 8px;">
+        VIBECHECK
+        <span style="font-size: 0.65rem; font-weight: 700; background: #141413; color: #F3F0EE; padding: 2px 7px; border-radius: 999px; letter-spacing: 0.08em;">PRO</span>
     </div>
-    <span style="font-weight: 700; font-size: 1.2rem; color: #141413;">VibeCheck</span>
+    <div style="font-size: 0.8rem; color: #696969; font-weight: 450; margin-top: 4px;">Operational Intelligence Engine</div>
 </div>
 """, unsafe_allow_html=True)
 
@@ -489,19 +485,19 @@ filtered_tck = tck_df[tck_df["employee_id"].isin(filtered_ids)]
 filtered_tool = tool_df[tool_df["employee_id"].isin(filtered_ids)]
 
 # ---------------------------------------------------------
-# Mastercard Floating Header Bar
+# Mastercard Clean Floating Header Bar
 # ---------------------------------------------------------
 st.markdown("""
 <div class="mc-nav-floating">
-    <div class="mc-brand-group">
-        <div class="mc-circles-logo">
-            <div class="mc-circle-left"></div>
-            <div class="mc-circle-right"></div>
-        </div>
-        <span class="mc-brand-title">VibeCheck</span>
+    <div class="mc-brand-text">
+        VIBECHECK
+        <span class="mc-brand-badge">2026</span>
     </div>
     <div style="display: flex; gap: 12px; align-items: center;">
-        <span class="mc-status-chip">• OPERATIONAL INTEGRITY</span>
+        <span class="mc-status-chip">
+            <span class="mc-eyebrow-dot" style="margin: 0;"></span>
+            OPERATIONAL INTEGRITY
+        </span>
         <span class="mc-status-chip">PYSQL READY</span>
     </div>
 </div>
@@ -522,34 +518,40 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ---------------------------------------------------------
-# Mastercard Circular Department Constellation
+# Mastercard Circular Department Constellation (Clean SVG Icons)
 # ---------------------------------------------------------
 st.markdown('<div class="mc-eyebrow" style="margin-top: 10px;"><span class="mc-eyebrow-dot"></span>DEPARTMENT ORBITS</div>', unsafe_allow_html=True)
 
 dept_counts = filtered_emp["Department"].value_counts().to_dict()
 
+# SVG Icon Strings
+rd_icon = '<svg class="mc-circle-svg-icon" viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>'
+sales_icon = '<svg class="mc-circle-svg-icon" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>'
+hr_icon = '<svg class="mc-circle-svg-icon" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>'
+arrow_svg = '<svg class="mc-satellite-svg" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>'
+
 st.markdown(f"""
 <div class="mc-constellation-container">
     <div class="mc-portrait-card">
         <div class="mc-circle-frame">
-            💻
-            <div class="mc-satellite-cta">→</div>
+            {rd_icon}
+            <div class="mc-satellite-cta">{arrow_svg}</div>
         </div>
         <div class="mc-portrait-title">Research & Dev</div>
         <div class="mc-portrait-sub">{dept_counts.get('Research & Development', 0):,} Hires</div>
     </div>
     <div class="mc-portrait-card">
         <div class="mc-circle-frame">
-            📈
-            <div class="mc-satellite-cta">→</div>
+            {sales_icon}
+            <div class="mc-satellite-cta">{arrow_svg}</div>
         </div>
         <div class="mc-portrait-title">Sales Operations</div>
         <div class="mc-portrait-sub">{dept_counts.get('Sales', 0):,} Hires</div>
     </div>
     <div class="mc-portrait-card">
         <div class="mc-circle-frame">
-            🤝
-            <div class="mc-satellite-cta">→</div>
+            {hr_icon}
+            <div class="mc-satellite-cta">{arrow_svg}</div>
         </div>
         <div class="mc-portrait-title">Human Resources</div>
         <div class="mc-portrait-sub">{dept_counts.get('Human Resources', 0):,} Hires</div>
@@ -558,14 +560,14 @@ st.markdown(f"""
 """, unsafe_allow_html=True)
 
 # ---------------------------------------------------------
-# Dashboard Navigation Tabs
+# Dashboard Navigation Tabs (Clean No Emojis)
 # ---------------------------------------------------------
 tab1, tab2, tab3, tab4, tab5 = st.tabs([
-    "📊 Executive Overview",
-    "⚡ Onboarding Friction",
-    "🎫 IT Support Bottlenecks",
-    "💻 Tool Adoption & Activity",
-    "🔍 PySQL Sandbox"
+    "Executive Overview",
+    "Onboarding Friction",
+    "IT Support Bottlenecks",
+    "Tool Adoption & Activity",
+    "PySQL Sandbox"
 ])
 
 # Shared Mastercard Plotly Styling Function
@@ -831,7 +833,7 @@ ORDER BY e.Department, active_users DESC;
     default_sql = query_presets.get(selected_preset, "SELECT * FROM employees LIMIT 10;")
     user_query = st.text_area("SQL Input Console", value=default_sql.strip(), height=150)
 
-    if st.button("▶ Execute Query"):
+    if st.button("Execute Query"):
         try:
             query_res = pd.read_sql_query(user_query, db_conn)
             st.success(f"Query returned {len(query_res)} records.")
@@ -839,7 +841,7 @@ ORDER BY e.Department, active_users DESC;
             
             csv_data = query_res.to_csv(index=False).encode('utf-8')
             st.download_button(
-                label="📥 Download CSV Results",
+                label="Download CSV Results",
                 data=csv_data,
                 file_name="vibecheck_query_results.csv",
                 mime="text/csv"
@@ -874,14 +876,14 @@ st.markdown("""
         </div>
         <div>
             <div class="mc-footer-col-title">NEED HELP?</div>
-            <a class="mc-footer-link">💬 Support Desk</a>
-            <a class="mc-footer-link">📖 Documentation</a>
-            <a class="mc-footer-link">🔒 Privacy & Consent</a>
+            <a class="mc-footer-link">Support Desk</a>
+            <a class="mc-footer-link">Documentation</a>
+            <a class="mc-footer-link">Privacy & Consent</a>
         </div>
     </div>
     <div class="mc-footer-bottom">
-        <div>© 2026 VibeCheck Analytics Network. Inspired by Mastercard Design Language.</div>
-        <div>Global English (US) 🌐</div>
+        <div>© 2026 VibeCheck Analytics Network. All rights reserved.</div>
+        <div>Global English (US)</div>
     </div>
 </div>
 """, unsafe_allow_html=True)
