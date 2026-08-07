@@ -1,16 +1,29 @@
+import os
 import urllib.request
 import urllib.error
 import json
 import pandas as pd
 from pathlib import Path
 
+# Load optional .env file if python-dotenv is installed
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except ImportError:
+    pass
+
 BASE_DIR = Path(__file__).parent
 DATA_DIR = BASE_DIR / "data"
 
-url = "https://etxlyrvthapqkybcvobl.supabase.co"
-anon_key = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV0eGx5cnZ0aGFwcWt5YmN2b2JsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODYwMDk1OTgsImV4cCI6MjEwMTU4NTU5OH0.kBzlztrWDta2BsfxNjaSJHDvUvl3txvzXrVgQYG2WUo"
+# Environment Variable configuration with secure fallbacks
+SUPABASE_URL = os.getenv("SUPABASE_URL", "https://etxlyrvthapqkybcvobl.supabase.co").rstrip("/")
+SUPABASE_ANON_KEY = os.getenv(
+    "SUPABASE_ANON_KEY",
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV0eGx5cnZ0aGFwcWt5YmN2b2JsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODYwMDk1OTgsImV4cCI6MjEwMTU4NTU5OH0.kBzlztrWDta2BsfxNjaSJHDvUvl3txvzXrVgQYG2WUo"
+)
 
-def upload_table(csv_file, table_name):
+def upload_table(csv_file: Path, table_name: str) -> None:
+    """Uploads a CSV dataset to Supabase via REST API with duplicate merge handling."""
     print(f"Uploading {table_name} from {csv_file.name}...")
     if not csv_file.exists():
         print(f"File {csv_file} does not exist. Skipping.")
@@ -26,9 +39,9 @@ def upload_table(csv_file, table_name):
     for i in range(0, len(records), chunk_size):
         chunk = records[i:i+chunk_size]
         
-        req = urllib.request.Request(f"{url}/rest/v1/{table_name}", method="POST")
-        req.add_header("apikey", anon_key)
-        req.add_header("Authorization", f"Bearer {anon_key}")
+        req = urllib.request.Request(f"{SUPABASE_URL}/rest/v1/{table_name}", method="POST")
+        req.add_header("apikey", SUPABASE_ANON_KEY)
+        req.add_header("Authorization", f"Bearer {SUPABASE_ANON_KEY}")
         req.add_header("Content-Type", "application/json")
         req.add_header("Prefer", "resolution=merge-duplicates")
         
@@ -58,7 +71,7 @@ def main():
     for fname, tname in tables:
         upload_table(DATA_DIR / fname, tname)
 
-    print("Supabase upload workflow complete!")
+    print("Supabase REST upload workflow complete!")
 
 if __name__ == '__main__':
     main()

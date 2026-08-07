@@ -1,14 +1,26 @@
-# ⚡ VibeCheck: Operational Data & Onboarding Analytics
+# VibeCheck: Operational Data & Onboarding Analytics
 
-[![Streamlit](https://img.shields.io/badge/Streamlit-1.61-FF4B4B?logo=streamlit)](https://streamlit.io/)
+[![Streamlit](https://img.shields.io/badge/Streamlit-1.40%2B-FF4B4B?logo=streamlit)](https://streamlit.io/)
 [![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB?logo=python)](https://python.org)
 [![Supabase](https://img.shields.io/badge/Supabase-REST_API-3ECF8E?logo=supabase)](https://supabase.com)
 [![SQL](https://img.shields.io/badge/PySQL-SQLite_In_Memory-003B57?logo=sqlite)](https://sqlite.org)
+[![Design](https://img.shields.io/badge/Design_System-Mastercard_Editorial-CF4500)](#-design-system)
 
-## 📌 Problem Context
+## Problem Context
 > *"A rapidly scaling startup stores employee onboarding progress, internal tool usage, and support request history separately, but leadership has no visibility into which operational friction points slow down new hire productivity during their first month."*
 
-**VibeCheck** addresses this problem by combining real-world IBM HR Analytics data with interconnected operational datasets (onboarding checklists, support tickets, daily tool usage) into an interactive analytics dashboard and PySQL query engine.
+**VibeCheck** addresses this problem by combining real-world IBM HR Analytics data with interconnected operational datasets (onboarding checklists, support tickets, daily tool usage) into an interactive analytics dashboard, PySQL query engine, and Mastercard-inspired editorial interface.
+
+---
+
+## 🎨 Design System
+
+VibeCheck is built following an **editorial magazine aesthetic** inspired by Mastercard:
+- **Canvas Cream Palette (`#F3F0EE`)**: Warm putty background canvas replacing generic dark/white modes.
+- **Stadium & Pill Forms**: `40px` radius hero media frames, `20px` radius card containers, and `999px` floating navigation pills.
+- **Department Orbits**: Circular department cards with embedded vector SVG icons and satellite micro-CTAs.
+- **Typographic Hierarchy**: `Sofia Sans` display typography with tight negative letter-spacing and Signal Orange (`#CF4500`) eyebrow accents.
+- **Icon Integrity**: Pure SVG vector icons with zero emoji noise.
 
 ---
 
@@ -36,7 +48,7 @@
 +-----------------------+                +---------------------------------+
 ```
 
-1. **`employees.csv`**: Master employee demographics, department, job role, and salary.
+1. **`employees.csv`**: Master employee demographics, department, job role, and tenure.
 2. **`onboarding.csv`**: Module completion percentages, days taken, manager & buddy assignments.
 3. **`support_tickets.csv`**: Internal IT/DevOps support requests, priority, and resolution hours.
 4. **`tool_usage.csv`**: Session activity logs across internal software tools (Slack, Jira, GitHub, VS Code, Notion, Google Workspace).
@@ -46,10 +58,10 @@
 ## 🚀 Quick Start Guide
 
 ### 1. Prerequisites & Dependencies
-Ensure Python 3.10+ is installed on your system.
+Ensure Python 3.10+ is installed on your system:
 
 ```bash
-pip install pandas numpy streamlit plotly kagglehub
+pip install pandas numpy streamlit plotly kagglehub python-dotenv
 ```
 
 ### 2. Generate Datasets & SQL Schemas
@@ -63,10 +75,13 @@ python generate_datasets.py
 python generate_sql.py
 ```
 
-### 3. Sync to Supabase REST API
-Upload tables to Supabase with upsert handling (`resolution=merge-duplicates`):
+### 3. Sync to Supabase REST API (Optional)
+Upload tables to Supabase with upsert handling (`resolution=merge-duplicates`). Configure credentials via `.env` or environment variables:
 
 ```bash
+export SUPABASE_URL="https://your-project.supabase.co"
+export SUPABASE_ANON_KEY="your-anon-key"
+
 python upload_rest.py
 ```
 
@@ -83,11 +98,11 @@ Open your browser at `http://localhost:8501`.
 
 ## 📊 Dashboard Modules
 
-- **📊 Executive Overview**: High-level KPIs, onboarding completion rates, and department friction index.
-- **⚡ Onboarding Friction**: Interactive correlation analysis between training completion %, support tickets generated, and days to onboard.
-- **🎫 IT Support Bottlenecks**: Resolution time distribution by ticket priority and assigned team workload.
-- **💻 Tool Adoption & Activity**: Tool session breakdown, active minutes, and device preferences.
-- **🔍 PySQL Sandbox**: In-memory SQLite console allowing custom SQL queries (`SELECT`, `JOIN`, `GROUP BY`) with instant tabular view and CSV export.
+- **Executive Overview**: High-level KPIs, department breakdown, ticket priority pie charts.
+- **Onboarding Friction**: Scatter plot correlations between training completion %, support tickets generated, and high-friction employee directory.
+- **IT Support Bottlenecks**: Resolution time distribution by priority and team workload bar charts.
+- **Tool Adoption & Activity**: Tool active minutes distribution and login frequency analysis.
+- **PySQL Sandbox**: In-memory SQLite console supporting multi-table ANSI SQL queries with instant execution and CSV export.
 
 ---
 
@@ -95,16 +110,16 @@ Open your browser at `http://localhost:8501`.
 
 ```
 S72-0726-Team04-PySQLStreamlit-VibeCheck/
-├── app.py                   # Main Streamlit web application & PySQL console
-├── generate_datasets.py     # Dataset generation & validation pipeline
-├── generate_sql.py          # SQL DDL & INSERT generator
-├── upload_rest.py           # Supabase REST API uploader
-├── employees.sql            # Generated SQL script for employees table
-├── onboarding.sql           # Generated SQL script for onboarding table
-├── support_tickets.sql      # Generated SQL script for support_tickets table
-├── tool_usage.sql           # Generated SQL script for tool_usage table
+├── app.py                   # Streamlit web application with Mastercard Design System
+├── generate_datasets.py     # Dataset generation & integrity validation pipeline
+├── generate_sql.py          # SQL DDL & INSERT statement generator
+├── upload_rest.py           # Supabase REST API uploader with .env support
+├── employees.sql            # Generated SQL schema & data for employees
+├── onboarding.sql           # Generated SQL schema & data for onboarding
+├── support_tickets.sql      # Generated SQL schema & data for support_tickets
+├── tool_usage.sql           # Generated SQL schema & data for tool_usage
 └── data/
-    ├── README.md            # Detailed schema documentation & data stats
+    ├── README.md            # Data schema documentation & statistics
     ├── employees.csv        # Master employee dataset
     ├── onboarding.csv       # Onboarding checklist dataset
     ├── support_tickets.csv  # IT/DevOps tickets dataset
