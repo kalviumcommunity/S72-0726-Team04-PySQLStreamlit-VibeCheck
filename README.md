@@ -57,52 +57,36 @@ VibeCheck is built following an **editorial magazine aesthetic** inspired by Mas
 
 ## 🚀 Quick Start Guide
 
-### 1. Prerequisites & Dependencies
-Ensure Python 3.10+ is installed on your system:
+### 1. Prerequisites
+Ensure you have Python 3.10+ and Node.js 18+ installed on your system.
 
+### 2. Environment Variables
+Check that the `.env` file in the root directory contains your Supabase secrets:
+```
+SUPABASE_URL=your_supabase_url_here
+SUPABASE_ANON_KEY=your_supabase_anon_key_here
+```
+*(Note: If these are not provided, the Django backend will safely fallback to using the CSV files located in `data/`.)*
+
+### 3. Start the Backend (Django)
+Open a terminal and run the following commands to start the API:
 ```bash
-pip install pandas numpy streamlit plotly kagglehub python-dotenv
+cd backend
+python -m venv venv
+.\venv\Scripts\activate
+pip install -r requirements.txt # (or pip install django djangorestframework django-cors-headers supabase pandas)
+python manage.py runserver
 ```
 
-### 2. Generate Datasets & SQL Schemas
-Regenerate synthetic datasets, validate referential integrity, and compile standard ANSI `.sql` files:
-
+### 4. Start the Frontend (Next.js)
+Open a separate terminal and run the following commands to start the UI:
 ```bash
-# Generate datasets into data/
-python generate_datasets.py
-
-# Generate DDL & INSERT SQL scripts
-python generate_sql.py
+cd frontend
+npm install
+npm run dev
 ```
 
-### 3. Sync to Supabase REST API (Optional)
-Upload tables to Supabase with upsert handling (`resolution=merge-duplicates`). Configure credentials via `.env` or environment variables:
-
-```bash
-export SUPABASE_URL="https://your-project.supabase.co"
-export SUPABASE_ANON_KEY="your-anon-key"
-
-python upload_rest.py
-```
-
-### 4. Launch Streamlit Web App
-Run the interactive dashboard locally:
-
-```bash
-streamlit run app.py
-```
-
-Open your browser at `http://localhost:8501`.
-
----
-
-## 📊 Dashboard Modules
-
-- **Executive Overview**: High-level KPIs, department breakdown, ticket priority pie charts.
-- **Onboarding Friction**: Scatter plot correlations between training completion %, support tickets generated, and high-friction employee directory.
-- **IT Support Bottlenecks**: Resolution time distribution by priority and team workload bar charts.
-- **Tool Adoption & Activity**: Tool active minutes distribution and login frequency analysis.
-- **PySQL Sandbox**: In-memory SQLite console supporting multi-table ANSI SQL queries with instant execution and CSV export.
+Open your browser at `http://localhost:3000` to view the modern dashboard.
 
 ---
 
@@ -110,18 +94,17 @@ Open your browser at `http://localhost:8501`.
 
 ```
 S72-0726-Team04-PySQLStreamlit-VibeCheck/
-├── app.py                   # Streamlit web application with Mastercard Design System
-├── generate_datasets.py     # Dataset generation & integrity validation pipeline
-├── generate_sql.py          # SQL DDL & INSERT statement generator
-├── upload_rest.py           # Supabase REST API uploader with .env support
-├── employees.sql            # Generated SQL schema & data for employees
-├── onboarding.sql           # Generated SQL schema & data for onboarding
-├── support_tickets.sql      # Generated SQL schema & data for support_tickets
-├── tool_usage.sql           # Generated SQL schema & data for tool_usage
-└── data/
-    ├── README.md            # Data schema documentation & statistics
-    ├── employees.csv        # Master employee dataset
-    ├── onboarding.csv       # Onboarding checklist dataset
-    ├── support_tickets.csv  # IT/DevOps tickets dataset
-    └── tool_usage.csv       # Software tool activity dataset
+├── .env                     # Environment variables for Supabase
+├── backend/                 # Django DRF backend
+│   ├── api/                 # Django app containing views processing Pandas/Supabase data
+│   └── config/              # Django project settings (CORS config)
+├── frontend/                # Next.js 14 frontend
+│   ├── src/app/             # App router pages (dashboard layout)
+│   ├── src/components/ui/   # Shadcn UI components
+│   └── src/lib/             # API utility functions
+└── data/                    # Datasets (used as local fallback if Supabase is offline)
+    ├── employees.csv
+    ├── onboarding.csv
+    ├── support_tickets.csv
+    └── tool_usage.csv
 ```

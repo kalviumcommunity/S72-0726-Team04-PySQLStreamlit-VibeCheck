@@ -1,6 +1,0 @@
-streamlit
-pandas
-plotly
-supabase
-streamlit-option-menu
-python-dotenv
