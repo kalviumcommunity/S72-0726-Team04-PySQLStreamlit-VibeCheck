@@ -1,57 +1,30 @@
 # VibeCheck: Operational Data & Onboarding Analytics
 
-[![Streamlit](https://img.shields.io/badge/Streamlit-1.40%2B-FF4B4B?logo=streamlit)](https://streamlit.io/)
+[![Next.js](https://img.shields.io/badge/Next.js-14-black?logo=next.js)](https://nextjs.org/)
 [![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB?logo=python)](https://python.org)
+[![Django](https://img.shields.io/badge/Django-API-092E20?logo=django)](https://www.djangoproject.com/)
 [![Supabase](https://img.shields.io/badge/Supabase-REST_API-3ECF8E?logo=supabase)](https://supabase.com)
-[![SQL](https://img.shields.io/badge/PySQL-SQLite_In_Memory-003B57?logo=sqlite)](https://sqlite.org)
-[![Design](https://img.shields.io/badge/Design_System-Mastercard_Editorial-CF4500)](#-design-system)
 
-## Problem Context
-> *"A rapidly scaling startup stores employee onboarding progress, internal tool usage, and support request history separately, but leadership has no visibility into which operational friction points slow down new hire productivity during their first month."*
+## 📌 About the Project
 
-**VibeCheck** addresses this problem by combining real-world IBM HR Analytics data with interconnected operational datasets (onboarding checklists, support tickets, daily tool usage) into an interactive analytics dashboard, PySQL query engine, and Mastercard-inspired editorial interface.
+**VibeCheck** is an interactive analytics dashboard designed to give leadership visibility into operational friction points that slow down new hire productivity during their first month. 
 
----
-
-## 🎨 Design System
-
-VibeCheck is built following an **editorial magazine aesthetic** inspired by Mastercard:
-- **Canvas Cream Palette (`#F3F0EE`)**: Warm putty background canvas replacing generic dark/white modes.
-- **Stadium & Pill Forms**: `40px` radius hero media frames, `20px` radius card containers, and `999px` floating navigation pills.
-- **Department Orbits**: Circular department cards with embedded vector SVG icons and satellite micro-CTAs.
-- **Typographic Hierarchy**: `Sofia Sans` display typography with tight negative letter-spacing and Signal Orange (`#CF4500`) eyebrow accents.
-- **Icon Integrity**: Pure SVG vector icons with zero emoji noise.
+By combining HR demographics, onboarding checklists, support tickets, and daily tool usage, VibeCheck helps identify bottlenecks and highlights employees who are struggling (experiencing high "friction").
 
 ---
 
-## 🏗️ Architecture & Datasets
+## 📈 Understanding the Dashboard & Metrics
 
-```
-+------------------+         1 : 1         +-------------------------------+
-|    EMPLOYEES     | --------------------> |          ONBOARDING           |
-+------------------+                       +-------------------------------+
-| PK  employee_id  |                       | PK,FK employee_id             |
-|     Department   |                       |      orientation_completed    |
-|     JobRole      |                       |      training_completion_pct  |
-|     ...          |                       |      onboarding_days          |
-+------------------+                       |      onboarding_status        |
-    |          |                           +-------------------------------+
-    | 1 : N    | 1 : N
-    v          v
-+-----------------------+                +---------------------------------+
-|      TOOL_USAGE       |                |         SUPPORT_TICKETS         |
-+-----------------------+                +---------------------------------+
-| PK  usage_id          |                | PK  ticket_id                   |
-| FK  employee_id       |                | FK  employee_id                 |
-|     tool_name         |                |     issue_type                  |
-|     active_minutes    |                |     resolution_hours            |
-+-----------------------+                +---------------------------------+
-```
+### What is the "Friction Score"?
+The **Friction Score** is a composite metric indicating how difficult an employee's onboarding experience is. It is calculated by cross-referencing their **training completion percentage** against the **number of support tickets** they've raised. 
+- A **high score ( > 70 )** indicates the employee is blocked, undertrained, or struggling with IT issues, requiring immediate intervention.
+- A **low score** means smooth onboarding.
 
-1. **`employees.csv`**: Master employee demographics, department, job role, and tenure.
-2. **`onboarding.csv`**: Module completion percentages, days taken, manager & buddy assignments.
-3. **`support_tickets.csv`**: Internal IT/DevOps support requests, priority, and resolution hours.
-4. **`tool_usage.csv`**: Session activity logs across internal software tools (Slack, Jira, GitHub, VS Code, Notion, Google Workspace).
+### What the Graphs Tell Us:
+- **Friction Correlation (Scatter Plot)**: Shows the relationship between training completion and support tickets. Generally, employees with lower training completion raise more support tickets, indicating a clear operational bottleneck.
+- **Tool Adoption Over Time (Line Chart)**: Tracks how quickly new hires adopt and actively use internal tools (like Jira, GitHub, or Slack) over their first weeks.
+- **Top IT Bottlenecks (Bar Chart)**: Highlights the most common types of support tickets raised by new hires (e.g., access requests, hardware issues), identifying areas where IT can proactively remove blockers.
+- **Buddy Impact (Bar Chart)**: Demonstrates the effectiveness of the onboarding buddy program by comparing the training completion rates of employees with and without an assigned buddy.
 
 ---
 
@@ -66,7 +39,7 @@ Check that the `.env` file in the root directory contains your Supabase secrets:
 SUPABASE_URL=your_supabase_url_here
 SUPABASE_ANON_KEY=your_supabase_anon_key_here
 ```
-*(Note: If these are not provided, the Django backend will safely fallback to using the CSV files located in `data/`.)*
+*(Note: If these are not provided, the Django backend will safely fallback to using the CSV files located in the `data/` folder.)*
 
 ### 3. Start the Backend (Django)
 Open a terminal and run the following commands to start the API:
@@ -74,7 +47,7 @@ Open a terminal and run the following commands to start the API:
 cd backend
 python -m venv venv
 .\venv\Scripts\activate
-pip install -r requirements.txt # (or pip install django djangorestframework django-cors-headers supabase pandas)
+pip install -r requirements.txt
 python manage.py runserver
 ```
 
@@ -86,7 +59,7 @@ npm install
 npm run dev
 ```
 
-Open your browser at `http://localhost:3000` to view the modern dashboard.
+Open your browser at `http://localhost:3000` to view the dashboard!
 
 ---
 
@@ -95,16 +68,12 @@ Open your browser at `http://localhost:3000` to view the modern dashboard.
 ```
 S72-0726-Team04-PySQLStreamlit-VibeCheck/
 ├── .env                     # Environment variables for Supabase
-├── backend/                 # Django DRF backend
-│   ├── api/                 # Django app containing views processing Pandas/Supabase data
-│   └── config/              # Django project settings (CORS config)
-├── frontend/                # Next.js 14 frontend
+├── backend/                 # Django DRF backend API
+│   ├── api/                 # Django app processing Pandas/Supabase data
+│   └── config/              # Django project settings
+├── frontend/                # Next.js frontend application
 │   ├── src/app/             # App router pages (dashboard layout)
-│   ├── src/components/ui/   # Shadcn UI components
+│   ├── src/components/      # UI components and Recharts charts
 │   └── src/lib/             # API utility functions
-└── data/                    # Datasets (used as local fallback if Supabase is offline)
-    ├── employees.csv
-    ├── onboarding.csv
-    ├── support_tickets.csv
-    └── tool_usage.csv
+└── data/                    # Datasets (used as local fallback)
 ```
