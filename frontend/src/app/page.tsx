@@ -5,7 +5,9 @@ import { fetchKPIs, fetchCharts, fetchEmployees, KPIPayload, ChartsPayload, Empl
 import AnimatedCard from "@/components/AnimatedCard";
 import FrictionScatter from "@/components/charts/FrictionScatter";
 import ToolAdoptionLine from "@/components/charts/ToolAdoptionLine";
-import EmployeeTable from "@/components/EmployeeTable";
+import BlockersBarChart from "@/components/charts/BlockersBarChart";
+import BuddyImpactChart from "@/components/charts/BuddyImpactChart";
+import EmployeeCardGrid from "@/components/EmployeeCardGrid";
 import EmployeeDrawer from "@/components/EmployeeDrawer";
 import { CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { AlertCircle } from "lucide-react";
@@ -25,6 +27,8 @@ export default function Dashboard() {
   }, []);
 
   const highRiskCount = employees.filter(e => e.friction_score > 70).length;
+  // Get top 6 high friction employees to display in the grid
+  const topHighRiskEmployees = employees.slice(0, 6);
 
   if (!kpis || !charts) return (
     <div className="min-h-screen bg-slate-50 flex items-center justify-center">
@@ -38,7 +42,7 @@ export default function Dashboard() {
   return (
     <div className="min-h-screen bg-slate-50 p-8 text-slate-900 font-sans space-y-6">
       
-      {/* Top Filter Bar (Mocked UI) */}
+      {/* Top Filter Bar */}
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Onboarding Operations</h1>
@@ -52,7 +56,7 @@ export default function Dashboard() {
 
       {/* Dynamic Alert Banner */}
       {highRiskCount > 0 && (
-        <div className="bg-red-50 text-red-800 border border-red-200 p-4 rounded-md flex items-center gap-3">
+        <div className="bg-red-50 text-red-800 border border-red-200 p-4 rounded-md flex items-center gap-3 shadow-sm">
           <AlertCircle className="w-5 h-5 text-red-600" />
           <span className="font-medium">Action Required: {highRiskCount} new hires have a friction score over 70.</span>
         </div>
@@ -77,7 +81,7 @@ export default function Dashboard() {
       {/* Charts Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <AnimatedCard delay={0.4}>
-          <CardHeader><CardTitle>Friction Correlation</CardTitle></CardHeader>
+          <CardHeader><CardTitle>Friction Correlation (Training vs Tickets)</CardTitle></CardHeader>
           <CardContent><FrictionScatter data={charts.scatter} /></CardContent>
         </AnimatedCard>
         
@@ -85,13 +89,26 @@ export default function Dashboard() {
           <CardHeader><CardTitle>Tool Adoption Over Time</CardTitle></CardHeader>
           <CardContent><ToolAdoptionLine data={charts.tool_adoption} /></CardContent>
         </AnimatedCard>
+        
+        <AnimatedCard delay={0.6}>
+          <CardHeader><CardTitle>Top IT Bottlenecks</CardTitle></CardHeader>
+          <CardContent><BlockersBarChart data={charts.blockers} /></CardContent>
+        </AnimatedCard>
+
+        <AnimatedCard delay={0.7}>
+          <CardHeader><CardTitle>Buddy Impact on Training %</CardTitle></CardHeader>
+          <CardContent><BuddyImpactChart data={charts.buddy_impact} /></CardContent>
+        </AnimatedCard>
       </div>
 
-      {/* Employee Table */}
-      <AnimatedCard delay={0.6}>
-        <CardHeader><CardTitle>High-Friction Employees</CardTitle></CardHeader>
+      {/* High Friction Employee Cards */}
+      <AnimatedCard delay={0.8}>
+        <CardHeader>
+          <CardTitle>High-Friction Employees</CardTitle>
+          <p className="text-sm text-slate-500">Top 6 employees requiring immediate intervention</p>
+        </CardHeader>
         <CardContent>
-          <EmployeeTable employees={employees} onRowClick={setSelectedEmployee} />
+          <EmployeeCardGrid employees={topHighRiskEmployees} onRowClick={setSelectedEmployee} />
         </CardContent>
       </AnimatedCard>
 
