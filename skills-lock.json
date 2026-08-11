@@ -7,6 +7,12 @@
       "skillPath": "skills/building-dashboards/SKILL.md",
       "computedHash": "f39934413502f89a989bb7b5971d0a7a240b88e4ae8cff8209bf4fdf19b3e01d"
     },
+    "find-skills": {
+      "source": "kalviumcommunity/S72-0726-Team04-PySQLStreamlit-VibeCheck",
+      "sourceType": "github",
+      "skillPath": ".agents/skills/find-skills/SKILL.md",
+      "computedHash": "d6cb30212b3b19f531378574784af1da09928b2e5078f299eaeaedd50191a4af"
+    },
     "frontend-design": {
       "source": "anthropics/skills",
       "sourceType": "github",
