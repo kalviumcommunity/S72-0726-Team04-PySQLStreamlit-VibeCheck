@@ -18,7 +18,7 @@ def fetch_table_as_df(table_name: str) -> pd.DataFrame:
         client = get_supabase_client()
         response = client.table(table_name).select("*").execute()
         return pd.DataFrame(response.data)
-    except Exception as e:
+    except Exception:
         # Fallback to local CSV if supabase is not reachable or configured
         csv_path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'data', f'{table_name}.csv')
         return pd.read_csv(csv_path)

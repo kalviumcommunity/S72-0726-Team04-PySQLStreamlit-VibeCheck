@@ -7,12 +7,21 @@ import { Card } from "@/components/ui/card";
 export default function AnimatedCard({ children, delay = 0 }: { children: ReactNode; delay?: number }) {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4, delay, ease: "easeOut" }}
+      initial={{ opacity: 0, y: 30, scale: 0.95 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      whileHover={{ y: -5, scale: 1.02 }}
+      transition={{ 
+        duration: 0.5, 
+        delay, 
+        type: "spring", 
+        stiffness: 100, 
+        damping: 15 
+      }}
       className="h-full"
     >
-      <Card className="h-full w-full">{children}</Card>
+      <Card className="h-full w-full bg-card/60 backdrop-blur-xl border border-border/50 shadow-[0_8px_30px_rgb(0,0,0,0.12)] hover:shadow-[0_8px_30px_rgba(124,58,237,0.15)] hover:border-primary/30 transition-all duration-300">
+        {children}
+      </Card>
     </motion.div>
   );
 }
