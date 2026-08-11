@@ -19,7 +19,7 @@ export default function AnimatedCard({ children, delay = 0 }: { children: ReactN
       }}
       className="h-full"
     >
-      <Card className="h-full w-full bg-card/60 backdrop-blur-xl border border-border/50 shadow-[0_8px_30px_rgb(0,0,0,0.12)] hover:shadow-[0_8px_30px_rgba(124,58,237,0.15)] hover:border-primary/30 transition-all duration-300">
+      <Card className="h-full w-full bg-white border border-slate-200 shadow-sm hover:shadow-md transition-all duration-300">
         {children}
       </Card>
     </motion.div>
