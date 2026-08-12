@@ -16,11 +16,11 @@ export default function BuddyImpactChart({ data }: BuddyImpactChartProps) {
   }));
 
   return (
-    <ResponsiveContainer width="100%" height={300}>
+    <ResponsiveContainer width="100%" height={300}>4
       <BarChart data={formattedData} margin={{ top: 20, right: 20, left: -20, bottom: 5 }}>
         <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
-        <XAxis dataKey="name" tickLine={false} axisLine={false} tick={{fill: '#64748b'}} />
-        <YAxis type="number" tickLine={false} axisLine={false} unit="%" domain={[0, 100]} tick={{fill: '#64748b'}} />
+        <XAxis dataKey="name" tickLine={false} axisLine={false} tick={{ fill: '#64748b' }} />
+        <YAxis type="number" tickLine={false} axisLine={false} unit="%" domain={[0, 100]} tick={{ fill: '#64748b' }} />
         <Tooltip cursor={{ fill: '#f1f5f9' }} contentStyle={{ borderRadius: '8px', border: '1px solid #e2e8f0', color: '#0f172a' }} />
         <Bar dataKey="percent" radius={[4, 4, 0, 0]} maxBarSize={60}>
           {formattedData.map((entry, index) => (
