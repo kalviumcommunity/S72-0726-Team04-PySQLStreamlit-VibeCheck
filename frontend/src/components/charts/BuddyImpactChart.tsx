@@ -9,14 +9,16 @@ interface BuddyImpactChartProps {
 export default function BuddyImpactChart({ data }: BuddyImpactChartProps) {
   if (!data || data.length === 0) return null;
 
-  // Format data for display
-  const formattedData = data.map(d => ({
-    name: d.buddy_assigned ? 'With Buddy' : 'No Buddy',
-    percent: Math.round(d.training_completion_percent)
-  }));
+  const formattedData = data.map(d => {
+    const isBuddy = d.buddy_assigned === true || String(d.buddy_assigned).toLowerCase() === 'true' || d.buddy_assigned === 1;
+    return {
+      name: isBuddy ? 'With Buddy' : 'Without Buddy',
+      percent: Math.round(d.training_completion_percent)
+    };
+  });
 
   return (
-    <ResponsiveContainer width="100%" height={300}>4
+    <ResponsiveContainer width="100%" height={300}>
       <BarChart data={formattedData} margin={{ top: 20, right: 20, left: -20, bottom: 5 }}>
         <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
         <XAxis dataKey="name" tickLine={false} axisLine={false} tick={{ fill: '#64748b' }} />

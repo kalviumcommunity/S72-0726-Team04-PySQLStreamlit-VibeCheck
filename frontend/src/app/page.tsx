@@ -80,10 +80,14 @@ export default function Dashboard() {
 
       {/* Charts Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <AnimatedCard delay={0.4}>
-          <CardHeader><CardTitle>Friction Correlation (Training vs Tickets)</CardTitle></CardHeader>
-          <CardContent><FrictionScatter data={charts.scatter} /></CardContent>
-        </AnimatedCard>
+          <AnimatedCard delay={0.1}>
+            <CardHeader className="pb-2 border-b border-slate-100">
+              <CardTitle className="text-base font-semibold text-slate-800">Tickets by Training Cohort</CardTitle>
+            </CardHeader>
+            <CardContent className="pt-4">
+              <FrictionScatter data={charts?.scatter || []} />
+            </CardContent>
+          </AnimatedCard>
         
         <AnimatedCard delay={0.5}>
           <CardHeader><CardTitle>Tool Adoption Over Time</CardTitle></CardHeader>
