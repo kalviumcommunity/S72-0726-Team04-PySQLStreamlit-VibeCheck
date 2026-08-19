@@ -2,6 +2,23 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from .utils import fetch_table_as_df
 import pandas as pd
+import os
+import pickle
+
+ML_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), "ML model")
+MODEL_PATH = os.path.join(ML_DIR, "best_model.pkl")
+DATA_PATH = os.path.join(ML_DIR, "engineered_data.csv")
+
+try:
+    with open(MODEL_PATH, "rb") as f:
+        ml_model = pickle.load(f)
+    ml_data = pd.read_csv(DATA_PATH)
+    X = ml_data.drop(columns=['employee_id', 'high_friction'])
+    ml_data['predicted_risk'] = ml_model.predict_proba(X)[:, 1] * 100
+    ml_predictions = ml_data[['employee_id', 'predicted_risk']]
+except Exception as e:
+    print(f"Error loading ML model: {e}")
+    ml_predictions = pd.DataFrame(columns=['employee_id', 'predicted_risk'])
 
 class DashboardKPIsView(APIView):
     def get(self, request):
@@ -64,6 +81,7 @@ class EmployeeFrictionTableView(APIView):
         
         merged = pd.merge(df_emp[['employee_id', 'JobRole', 'Department']], df_onb[['employee_id', 'onboarding_status', 'training_completion_percent']], on='employee_id')
         merged = pd.merge(merged, ticket_stats, on='employee_id', how='left').fillna(0)
+        merged = pd.merge(merged, ml_predictions, on='employee_id', how='left').fillna({'predicted_risk': 0})
         
         # Calculate friction_score: (Ticket Count * 10) + (Avg Resolution Hours * 2) - (Training % * 0.5)
         merged['friction_score'] = (merged['ticket_count'] * 10) + (merged['avg_resolution'] * 2) - (merged['training_completion_percent'] * 0.5)

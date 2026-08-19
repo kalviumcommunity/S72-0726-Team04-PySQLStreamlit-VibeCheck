@@ -48,9 +48,16 @@ export default function EmployeeCardGrid({ employees, onRowClick }: EmployeeCard
           <div>
             <div className="flex justify-between items-start mb-3">
               <span className="text-sm font-medium text-slate-500 bg-slate-50 px-2 py-1 rounded-md border border-slate-100">#{emp.employee_id}</span>
-              <span className={`inline-flex px-3 py-1 rounded-full text-xs font-semibold border backdrop-blur-sm ${getScoreColor(emp.friction_score)}`}>
-                Score: {emp.friction_score.toFixed(1)}
-              </span>
+              <div className="flex flex-col items-end gap-1">
+                <span className={`inline-flex px-3 py-1 rounded-full text-xs font-semibold border backdrop-blur-sm ${getScoreColor(emp.friction_score)}`}>
+                  Score: {emp.friction_score.toFixed(1)}
+                </span>
+                {emp.predicted_risk !== undefined && (
+                  <span className={`inline-flex px-3 py-1 rounded-full text-xs font-semibold border backdrop-blur-sm ${getScoreColor(emp.predicted_risk)}`}>
+                    ML Risk: {emp.predicted_risk.toFixed(1)}%
+                  </span>
+                )}
+              </div>
             </div>
             <h3 className="font-bold text-slate-900 text-lg truncate group-hover:text-slate-700 transition-colors" title={emp.JobRole}>{emp.JobRole}</h3>
             <p className="text-sm text-slate-500 mt-1">{emp.Department}</p>
