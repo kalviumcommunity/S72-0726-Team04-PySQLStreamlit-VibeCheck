@@ -10,7 +10,8 @@ export default function BuddyImpactChart({ data }: BuddyImpactChartProps) {
   if (!data || data.length === 0) return null;
 
   const formattedData = data.map(d => {
-    const isBuddy = d.buddy_assigned === true || String(d.buddy_assigned).toLowerCase() === 'true' || d.buddy_assigned === 1;
+    const val = String(d.buddy_assigned).toLowerCase();
+    const isBuddy = d.buddy_assigned === true || val === 'true' || val === 'yes' || val === 'y' || d.buddy_assigned === 1;
     return {
       name: isBuddy ? 'With Buddy' : 'Without Buddy',
       percent: Math.round(d.training_completion_percent)
