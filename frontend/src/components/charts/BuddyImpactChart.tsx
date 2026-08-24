@@ -3,7 +3,7 @@
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from "recharts";
 
 interface BuddyImpactChartProps {
-  data: { buddy_assigned: boolean; training_completion_percent: number }[];
+  data: { buddy_assigned: boolean | string; training_completion_percent: number }[];
 }
 
 export default function BuddyImpactChart({ data }: BuddyImpactChartProps) {
@@ -11,7 +11,7 @@ export default function BuddyImpactChart({ data }: BuddyImpactChartProps) {
 
   const formattedData = data.map(d => {
     const val = String(d.buddy_assigned).toLowerCase();
-    const isBuddy = d.buddy_assigned === true || val === 'true' || val === 'yes' || val === 'y' || d.buddy_assigned === 1;
+    const isBuddy = d.buddy_assigned === true || val === 'true' || val === 'yes' || val === 'y' || (d.buddy_assigned as any) === 1;
     return {
       name: isBuddy ? 'With Buddy' : 'Without Buddy',
       percent: Math.round(d.training_completion_percent)
