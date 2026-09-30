@@ -21,4 +21,8 @@ def fetch_table_as_df(table_name: str) -> pd.DataFrame:
     except Exception:
         # Fallback to local CSV if supabase is not reachable or configured
         csv_path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'data', f'{table_name}.csv')
-        return pd.read_csv(csv_path)
+        if os.path.exists(csv_path):
+            return pd.read_csv(csv_path)
+        else:
+            print(f"Warning: {csv_path} not found")
+            return pd.DataFrame()
