@@ -19,5 +19,6 @@ them in order with **Create a merge commit** so every later PR shows only its ow
 | 09 | `gaurav/day-09-feature-engineering` | 9 | Engineer onboarding features (days to complete, speed bucket, new-hire flag) | [doc](day-09-feature-engineering.md) |
 | 10 | `gaurav/day-10-completion-distribution` | 10 | Distribution analysis of onboarding completion times | [doc](day-10-completion-distribution.md) |
 | 11 | `gaurav/day-11-fast-vs-slow-behaviour` | 11 | Behavioural analysis of new hires: fast vs slow onboarders | [doc](day-11-fast-vs-slow-behaviour.md) |
+| 12 | `gaurav/day-12-delay-root-causes` | 12 | Root-cause investigation for delayed onboarding | [doc](day-12-delay-root-causes.md) |
 
 Compare link pattern: `https://github.com/kalviumcommunity/S72-0726-Team04-PySQLStreamlit-VibeCheck/compare/main...<branch>`
