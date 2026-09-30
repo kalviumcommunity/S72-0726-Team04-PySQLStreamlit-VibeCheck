@@ -3,4 +3,6 @@
 #   pip install -r requirements-pipeline.txt
 pandas>=2.2,<4
 numpy>=1.26
+SQLAlchemy>=2.0,<3
+PyMySQL>=1.1          # driver for VIBECHECK_DB_URL=mysql+pymysql://...
 pytest>=8
