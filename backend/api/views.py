@@ -93,6 +93,9 @@ class EmployeeFrictionTableView(APIView):
         
         merged = pd.merge(df_emp[['employee_id', 'JobRole', 'Department']], df_onb[['employee_id', 'onboarding_status', 'training_completion_percent']], on='employee_id')
         merged = pd.merge(merged, ticket_stats, on='employee_id', how='left').fillna(0)
+        search = request.GET.get('search')
+        if search:
+            merged = merged[merged['JobRole'].str.contains(search, case=False, na=False)]
         ml_preds = get_ml_predictions()
         merged = pd.merge(merged, ml_preds, on='employee_id', how='left').fillna({'predicted_risk': 0})
         
