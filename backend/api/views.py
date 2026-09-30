@@ -105,6 +105,15 @@ class EmployeeFrictionTableView(APIView):
         merged = merged.sort_values(by='friction_score', ascending=False)
         return Response(merged.head(100).to_dict('records'))
 
+from django.http import HttpResponse
+class ExportEmployeesCSVView(APIView):
+    def get(self, request):
+        df_emp = fetch_table_as_df("employees")
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename="employees.csv"'
+        df_emp.to_csv(path_or_buf=response, index=False)
+        return response
+
 class EmployeeDetailView(APIView):
     def get(self, request, employee_id):
         df_emp = fetch_table_as_df("employees")
