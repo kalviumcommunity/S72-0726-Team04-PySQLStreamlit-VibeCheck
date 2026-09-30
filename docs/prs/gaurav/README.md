@@ -24,5 +24,6 @@ them in order with **Create a merge commit** so every later PR shows only its ow
 | 14 | `gaurav/day-14-sql-window-rankings` | 15 | Rank hires by onboarding speed with SQL window functions | [doc](day-14-sql-window-rankings.md) |
 | 15 | `gaurav/day-15-sql-python-reconciliation` | 16 | Validate SQL outputs against the Python pipeline | [doc](day-15-sql-python-reconciliation.md) |
 | 16 | `gaurav/day-16-kpi-cards` | 17 | Onboarding KPI cards and the Streamlit Onboarding Ops page | [doc](day-16-kpi-cards.md) |
+| 17 | `gaurav/day-17-export-datasets-charts` | 18 | Export cleaned datasets, analysis tables and charts with a manifest | [doc](day-17-export-datasets-charts.md) |
 
 Compare link pattern: `https://github.com/kalviumcommunity/S72-0726-Team04-PySQLStreamlit-VibeCheck/compare/main...<branch>`
