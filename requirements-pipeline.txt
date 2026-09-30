@@ -5,4 +5,5 @@ pandas>=2.2,<4
 numpy>=1.26
 SQLAlchemy>=2.0,<3
 PyMySQL>=1.1          # driver for VIBECHECK_DB_URL=mysql+pymysql://...
+streamlit>=1.36       # streamlit_app/ dashboard
 pytest>=8
