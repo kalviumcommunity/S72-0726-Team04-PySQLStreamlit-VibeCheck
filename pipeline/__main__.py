@@ -3,6 +3,7 @@
 usage: python -m pipeline <command> [options]
 
 commands:
+  validate     run every data check CI runs (contracts, dictionary, SQL vs Python)
   ingest       load one dataset and print a summary
   contracts    validate every dataset against the shared schema contracts
   dictionary   print / regenerate / check the onboarding data dictionary
@@ -20,6 +21,7 @@ import importlib
 import sys
 
 COMMANDS = {
+    "validate": "pipeline.validate",
     "ingest": "pipeline.ingest",
     "contracts": "pipeline.schemas",
     "dictionary": "pipeline.data_dictionary",

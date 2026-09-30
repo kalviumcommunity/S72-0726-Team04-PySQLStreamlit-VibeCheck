@@ -1,0 +1,53 @@
+name: Pipeline validation
+
+# Runs on every change that can affect the data pipeline: the datasets, the
+# pipeline code, the dashboard built on it, or the checks themselves.
+on:
+  pull_request:
+    paths:
+      - "data/**"
+      - "pipeline/**"
+      - "streamlit_app/**"
+      - "tests/**"
+      - "docs/data_dictionary/**"
+      - "requirements-pipeline.txt"
+      - "pytest.ini"
+      - ".github/workflows/pipeline-validation.yml"
+  push:
+    branches: [main]
+    paths:
+      - "data/**"
+      - "pipeline/**"
+      - "streamlit_app/**"
+      - "tests/**"
+      - "docs/data_dictionary/**"
+      - "requirements-pipeline.txt"
+      - "pytest.ini"
+      - ".github/workflows/pipeline-validation.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: Validate data and test the pipeline
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements-pipeline.txt
+
+      - name: Install pipeline dependencies
+        run: pip install -r requirements-pipeline.txt
+
+      - name: Validate datasets (contracts, data dictionary, SQL vs Python)
+        run: python -m pipeline validate
+
+      - name: Run pipeline tests
+        run: pytest
