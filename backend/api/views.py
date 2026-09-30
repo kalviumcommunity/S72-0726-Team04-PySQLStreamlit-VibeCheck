@@ -152,6 +152,7 @@ class EmployeeDetailView(APIView):
             "buddy_assigned": str(onb_info.get("buddy_assigned", "N/A")),
             "friction_score": float(round(friction_score, 1)),
             "predicted_risk": float(round(predicted_risk, 1)),
+            "high_risk_flag": bool(predicted_risk > 90.0 or friction_score > 85.0),
             "tickets": tickets_list,
             "tool_usage": tools_list
         }
