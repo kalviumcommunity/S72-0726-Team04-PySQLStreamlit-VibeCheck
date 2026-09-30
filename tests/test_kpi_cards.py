@@ -46,7 +46,7 @@ def test_cards_show_deltas_for_rates_but_not_counts():
 def test_page_renders_all_cards_from_real_data():
     app = AppTest.from_file(str(PAGE), default_timeout=60).run()
     assert not app.exception
-    metrics = {m.label: m.value for m in app.metric}
+    metrics = {m.label: m.value for m in app.tabs[0].metric}  # the Overview tab
     assert len(metrics) == len(KPI_SPECS)
     assert metrics["Onboarding completion rate"] == "97.5%"
     assert metrics["Delayed hires"] == "14"
