@@ -156,3 +156,9 @@ class EmployeeDetailView(APIView):
             "tool_usage": tools_list
         }
         return Response(detail)
+
+from django.core.cache import cache
+class DataRefreshView(APIView):
+    def post(self, request):
+        cache.clear()
+        return Response({"status": "success"})
