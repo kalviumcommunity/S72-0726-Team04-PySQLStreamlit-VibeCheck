@@ -2,6 +2,13 @@ from django.test import TestCase
 from rest_framework.test import APIClient
 from rest_framework import status
 
+class DashboardKPIsTest(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+    def test_get_kpis(self):
+        response = self.client.get('/api/kpis/')
+        self.assertEqual(response.status_code, 200)
+
 class AnalyticsApiTests(TestCase):
     def setUp(self):
         self.client = APIClient()
