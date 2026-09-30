@@ -11,8 +11,10 @@ dist/
 downloads/
 eggs/
 .eggs/
-lib/
-lib64/
+# Anchored to the repo root: an unanchored `lib/` also matched frontend/src/lib/,
+# which silently kept the frontend's api.ts/utils.ts out of git (see AUDIT.md B1).
+/lib/
+/lib64/
 parts/
 sdist/
 var/
@@ -23,6 +25,11 @@ wheels/
 .venv
 venv/
 ENV/
+
+.pytest_cache/
+
+# Pipeline outputs (exports, local databases) - always regenerated, never committed
+outputs/
 
 # Streamlit / IDE
 .streamlit/

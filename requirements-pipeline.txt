@@ -1,0 +1,6 @@
+# Data pipeline (pipeline/) and its tests. The Django API keeps its own
+# requirements in backend/; install this file for pipeline work:
+#   pip install -r requirements-pipeline.txt
+pandas>=2.2,<4
+numpy>=1.26
+pytest>=8
