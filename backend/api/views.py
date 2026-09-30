@@ -117,6 +117,9 @@ class EmployeeDetailView(APIView):
         df_tools = fetch_table_as_df("tool_usage")
         ml_preds = get_ml_predictions()
 
+        if df_emp.empty or df_onb.empty:
+            return Response({"error": "Core datasets missing"}, status=503)
+
         emp_row = df_emp[df_emp['employee_id'] == employee_id]
         if emp_row.empty:
             return Response({"error": "Employee not found"}, status=404)
