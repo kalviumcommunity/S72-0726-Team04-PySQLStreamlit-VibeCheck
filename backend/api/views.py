@@ -4,6 +4,8 @@ from .utils import fetch_table_as_df
 import pandas as pd
 import os
 import pickle
+import logging
+logger = logging.getLogger(__name__)
 
 ML_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), "ML model")
 MODEL_PATH = os.path.join(ML_DIR, "best_model.pkl")
@@ -21,7 +23,7 @@ def get_ml_predictions() -> pd.DataFrame:
             ml_data['predicted_risk'] = ml_model.predict_proba(X)[:, 1] * 100
             return ml_data[['employee_id', 'predicted_risk']]
     except Exception as e:
-        print(f"Notice: Standard ML model predict_proba skipped ({e}), utilizing risk scores dataset.")
+        logger.warning(f"ML model execution failed: {e}. Falling back to CSV.")
 
     if os.path.exists(RISK_SCORES_PATH):
         try:
