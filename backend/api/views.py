@@ -103,7 +103,12 @@ class EmployeeFrictionTableView(APIView):
         merged['friction_score'] = merged['friction_score'].clip(lower=0, upper=100)
         
         merged = merged.sort_values(by='friction_score', ascending=False)
-        return Response(merged.head(100).to_dict('records'))
+        page = int(request.GET.get('page', 1))
+        limit = int(request.GET.get('limit', 20))
+        start = (page - 1) * limit
+        end = start + limit
+        paginated = merged.iloc[start:end]
+        return Response({'total': len(merged), 'page': page, 'data': paginated.to_dict('records')})
 
 class EmployeeDetailView(APIView):
     def get(self, request, employee_id):
