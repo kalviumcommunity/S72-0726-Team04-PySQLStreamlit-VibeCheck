@@ -46,6 +46,7 @@ def test_root_causes_tab_explains_delays(app):
     assert len(causes.get("plotly_chart")) == 1
 
 
-def test_alerts_tab_is_a_mock_until_the_feed_lands(app):
+def test_alerts_tab_shows_the_live_feed(app):
     alerts = app.tabs[3]
-    assert "37 hires in this cohort have an open onboarding" in alerts.info[0].value
+    assert [m.label for m in alerts.metric] == ["High severity", "Medium severity", "Low severity"]
+    assert len(alerts.dataframe) == 1

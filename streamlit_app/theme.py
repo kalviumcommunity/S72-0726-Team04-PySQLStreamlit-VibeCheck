@@ -24,7 +24,14 @@ STATUS_BADGES = {
     "Delayed": ":red[Delayed]",
 }
 
-__all__ = ["PAGE_TITLE", "STATUS_BADGES", "STATUS_COLOURS", "TABS", "TONE_BADGES", "configure_page", "section"]
+SEVERITY_BADGES = {
+    "high": ":red[● Act today]",
+    "medium": ":orange[● This week]",
+    "low": ":blue[● Keep an eye]",
+}
+
+__all__ = ["PAGE_TITLE", "SEVERITY_BADGES", "STATUS_BADGES", "STATUS_COLOURS", "TABS", "TONE_BADGES",
+           "configure_page", "section"]
 
 
 def configure_page() -> None:

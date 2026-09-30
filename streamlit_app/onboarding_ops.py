@@ -14,10 +14,12 @@ if str(ROOT) not in sys.path:  # `streamlit run` only puts this folder on sys.pa
 
 import streamlit as st  # noqa: E402
 
+from pipeline.alerts import evaluate_alerts  # noqa: E402
 from pipeline.analysis.root_cause import rank_root_causes, root_cause_findings  # noqa: E402
 from pipeline.export import build_charts  # noqa: E402
 from pipeline.features import build_feature_table  # noqa: E402
 from pipeline.kpis import compute_department_kpis, compute_onboarding_kpis  # noqa: E402
+from streamlit_app.components.alerts_panel import alerts_banner, render_alerts_panel  # noqa: E402
 from streamlit_app.components.cohort_filters import apply_cohort_filter, render_cohort_sidebar  # noqa: E402
 from streamlit_app.components.kpi_cards import build_kpi_cards, render_kpi_cards  # noqa: E402
 from streamlit_app.theme import TABS, configure_page, section  # noqa: E402
@@ -38,16 +40,25 @@ def load_root_causes(features):
     return rank_root_causes(features)
 
 
+@st.cache_data
+def load_alerts(features):
+    return evaluate_alerts(features)
+
+
 features = load_features()
 root_causes = load_root_causes(features)  # company-wide: cohorts are too small for stable lifts
+alerts = load_alerts(features)            # company-wide thresholds, narrowed to the cohort below
 cohort = render_cohort_sidebar(features)
 selected = apply_cohort_filter(features, cohort)
+cohort_alerts = alerts[alerts["employee_id"].isin(selected["employee_id"])]
 
 st.title("Onboarding Ops")
 st.caption(f"Showing {len(selected):,} of {len(features):,} hires · {cohort.describe()}")
 if selected.empty:
     st.info("No hires match this cohort. Widen the filters in the sidebar.")
     st.stop()
+if banner := alerts_banner(cohort_alerts):
+    st.warning(banner)
 
 charts = build_charts(selected, root_causes)
 overview, cohort_tab, causes_tab, alerts_tab = st.tabs(TABS)
@@ -73,7 +84,5 @@ with causes_tab:
     st.plotly_chart(charts["delay_root_causes"])
 
 with alerts_tab:
-    open_count = int(selected["onboarding_status"].isin(["In Progress", "Delayed"]).sum())
-    section("Alerts", "Mock-up: the live alert feed replaces this panel in the next iteration.")
-    st.info(f"{open_count} hires in this cohort have an open onboarding and will be monitored here: "
-            "severity counters, a filterable alert list and a CSV export.")
+    section("Alerts", "Open onboardings that need attention, most severe first. Thresholds are company-wide.")
+    render_alerts_panel(cohort_alerts)
