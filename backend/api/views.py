@@ -156,3 +156,10 @@ class EmployeeDetailView(APIView):
             "tool_usage": tools_list
         }
         return Response(detail)
+
+class ToolUsageAggView(APIView):
+    def get(self, request):
+        df = fetch_table_as_df("tool_usage")
+        if df.empty: return Response([])
+        agg = df.groupby('tool_name')['active_minutes'].sum().reset_index()
+        return Response(agg.to_dict('records'))
