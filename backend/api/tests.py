@@ -22,6 +22,10 @@ class AnalyticsApiTests(TestCase):
         self.assertIn('tool_adoption', response.data)
         self.assertIn('buddy_impact', response.data)
 
+    def test_employee_friction_table(self):
+        response = self.client.get('/api/employees/?limit=10')
+        self.assertEqual(response.status_code, 200)
+
     def test_employees_endpoint(self):
         response = self.client.get('/api/employees/')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
