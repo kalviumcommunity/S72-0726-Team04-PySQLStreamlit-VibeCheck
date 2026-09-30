@@ -12,6 +12,7 @@ commands:
   reconcile    check that SQL and Python KPIs agree
   export       write cleaned data, analysis tables, charts and a manifest
   alerts       flag hires whose onboarding needs attention
+  summary      Markdown run summary for GitHub Actions
 
 Run `python -m pipeline <command> --help` for a command's options.
 """
@@ -30,6 +31,7 @@ COMMANDS = {
     "reconcile": "pipeline.reconcile",
     "export": "pipeline.export",
     "alerts": "pipeline.alerts",
+    "summary": "pipeline.ci_summary",
 }
 
 

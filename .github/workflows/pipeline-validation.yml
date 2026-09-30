@@ -29,25 +29,80 @@ on:
 permissions:
   contents: read
 
+# A new push to the same PR cancels the run it supersedes.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   validate:
-    name: Validate data and test the pipeline
+    name: Validate datasets
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v5
-
       - uses: actions/setup-python@v6
         with:
           python-version: "3.12"
           cache: pip
           cache-dependency-path: requirements-pipeline.txt
-
       - name: Install pipeline dependencies
         run: pip install -r requirements-pipeline.txt
-
       - name: Validate datasets (contracts, data dictionary, SQL vs Python)
-        run: python -m pipeline validate
+        run: python -m pipeline validate --json validation.json
+      - name: Publish validation summary
+        if: always()
+        run: python -m pipeline summary --validation validation.json >> "$GITHUB_STEP_SUMMARY"
 
-      - name: Run pipeline tests
+  test:
+    name: Tests (Python ${{ matrix.python-version }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        # 3.10 resolves pandas 2.x, newer versions pandas 3.x - both must keep passing.
+        python-version: ["3.10", "3.12", "3.13"]
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+          cache-dependency-path: requirements-pipeline.txt
+      - name: Install pipeline dependencies
+        run: pip install -r requirements-pipeline.txt
+      - name: Run pipeline tests (unit, dashboard and end-to-end)
         run: pytest
+
+  mysql:
+    name: SQL layer on MySQL 8.4
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    services:
+      mysql:
+        image: mysql:8.4
+        env:
+          MYSQL_ROOT_PASSWORD: vibecheck-ci
+          MYSQL_DATABASE: vibecheck
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -pvibecheck-ci"
+          --health-interval=5s
+          --health-timeout=5s
+          --health-retries=30
+    env:
+      # Throwaway CI container only; never point this at a shared database.
+      VIBECHECK_TEST_MYSQL_URL: mysql+pymysql://root:vibecheck-ci@127.0.0.1:3306/vibecheck
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements-pipeline.txt
+      - name: Install pipeline dependencies
+        run: pip install -r requirements-pipeline.txt
+      - name: Run every SQL query against MySQL and reconcile with Python
+        run: pytest -m mysql

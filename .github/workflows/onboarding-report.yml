@@ -1,0 +1,65 @@
+name: Onboarding report
+
+# Weekday-morning run of the full pipeline: validate, export, evaluate alerts,
+# then publish a job summary and the outputs as a downloadable artifact.
+on:
+  schedule:
+    - cron: "30 3 * * 1-5"   # 09:00 IST, Monday to Friday
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: onboarding-report
+  cancel-in-progress: false
+
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements-pipeline.txt
+      - name: Install pipeline dependencies
+        run: pip install -r requirements-pipeline.txt
+
+      - name: Validate datasets
+        run: python -m pipeline validate --json validation.json
+
+      - name: Export cleaned data, analysis tables and charts
+        run: python -m pipeline export
+
+      - name: Evaluate onboarding alerts
+        id: alerts
+        # Alerts firing is information, not a broken pipeline: keep going so the report is published.
+        continue-on-error: true
+        run: python -m pipeline alerts --fail-on high
+
+      - name: Write run summary
+        if: always()
+        run: >-
+          python -m pipeline summary
+          --validation validation.json
+          --manifest outputs/manifest.json
+          --alerts outputs/alerts.csv
+          >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: onboarding-report-${{ github.run_number }}
+          path: |
+            outputs/
+            validation.json
+          retention-days: 14
+          if-no-files-found: warn
+
+      - name: Flag high-severity alerts
+        if: steps.alerts.outcome == 'failure'
+        run: echo "::warning title=Onboarding alerts::High-severity onboarding alerts fired - see the run summary."
