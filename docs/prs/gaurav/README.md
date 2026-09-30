@@ -28,5 +28,6 @@ them in order with **Create a merge commit** so every later PR shows only its ow
 | 18 | `gaurav/day-18-cohort-filters` | 19 | Cohort filters for the onboarding dashboard | [doc](day-18-cohort-filters.md) |
 | 19 | `gaurav/day-19-alert-monitoring` | 20 | Alert monitoring for delayed onboarding | [doc](day-19-alert-monitoring.md) |
 | 20 | `gaurav/day-20-ci-pipeline-validation` | 22 | GitHub Actions workflow for pipeline validation | [doc](day-20-ci-pipeline-validation.md) |
+| 21 | `gaurav/day-21-dashboard-ux-mock` | 23 | Mock UX for dashboard improvements: tabs, shared design tokens, wireframe | [doc](day-21-dashboard-ux-mock.md) |
 
 Compare link pattern: `https://github.com/kalviumcommunity/S72-0726-Team04-PySQLStreamlit-VibeCheck/compare/main...<branch>`

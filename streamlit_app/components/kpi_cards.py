@@ -8,6 +8,8 @@ from __future__ import annotations
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
 
+from streamlit_app.theme import TONE_BADGES
+
 
 @dataclass(frozen=True)
 class KpiSpec:
@@ -45,14 +47,6 @@ class KpiCard:
     help: str
     delta: str | None = None
     delta_color: str = "normal"  # st.metric: "inverse" when a rise is bad news
-
-
-TONE_BADGES = {
-    "good": ":green[● On target]",
-    "warn": ":orange[● Watch]",
-    "bad": ":red[● Off target]",
-    "neutral": ":gray[● No data]",
-}
 
 
 def tone_for(value: float | None, spec: KpiSpec) -> str:
