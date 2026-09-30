@@ -156,3 +156,7 @@ class EmployeeDetailView(APIView):
             "tool_usage": tools_list
         }
         return Response(detail)
+
+class HealthCheckView(APIView):
+    def get(self, request):
+        return Response({"status": "ok", "version": "1.0.0"})
