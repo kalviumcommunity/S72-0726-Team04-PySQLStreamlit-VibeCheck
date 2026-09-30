@@ -156,3 +156,13 @@ class EmployeeDetailView(APIView):
             "tool_usage": tools_list
         }
         return Response(detail)
+
+class DepartmentKPIsView(APIView):
+    def get(self, request):
+        df_emp = fetch_table_as_df("employees")
+        df_onb = fetch_table_as_df("onboarding")
+        if df_emp.empty or df_onb.empty: return Response([])
+        merged = pd.merge(df_emp, df_onb, on='employee_id')
+        dept_kpis = merged.groupby('Department')['training_completion_percent'].mean().reset_index()
+        dept_kpis.columns = ['department', 'avg_training_percent']
+        return Response(dept_kpis.to_dict('records'))
