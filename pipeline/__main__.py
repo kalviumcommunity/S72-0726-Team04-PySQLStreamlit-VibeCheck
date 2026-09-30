@@ -10,6 +10,7 @@ commands:
   rankings     fastest completed hires per department (SQL window functions)
   reconcile    check that SQL and Python KPIs agree
   export       write cleaned data, analysis tables, charts and a manifest
+  alerts       flag hires whose onboarding needs attention
 
 Run `python -m pipeline <command> --help` for a command's options.
 """
@@ -26,6 +27,7 @@ COMMANDS = {
     "rankings": "pipeline.rankings",
     "reconcile": "pipeline.reconcile",
     "export": "pipeline.export",
+    "alerts": "pipeline.alerts",
 }
 
 
