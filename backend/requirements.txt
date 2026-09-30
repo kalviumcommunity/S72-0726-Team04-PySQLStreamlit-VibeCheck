@@ -1,0 +1,18 @@
+# VibeCheck Django API.  cd backend && pip install -r requirements.txt
+Django>=5.2,<6              # project was generated with 5.2 (LTS)
+djangorestframework>=3.15
+django-cors-headers>=4.4
+python-dotenv>=1.0
+
+# Data layer
+pandas>=2.2,<4
+numpy>=1.26
+
+# Optional remote datastore: only used when SUPABASE_URL and SUPABASE_ANON_KEY are set,
+# otherwise the API reads the CSVs in data/.
+supabase>=2.0
+
+# Needed to unpickle "ML model/best_model.pkl" (an XGBoost classifier); without them the
+# API falls back to the precomputed risk_scores.csv.
+scikit-learn>=1.5
+xgboost>=2.0

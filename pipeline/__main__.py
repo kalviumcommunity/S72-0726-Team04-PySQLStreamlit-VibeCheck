@@ -19,7 +19,10 @@ Run `python -m pipeline <command> --help` for a command's options.
 from __future__ import annotations
 
 import importlib
+import os
 import sys
+
+from sqlalchemy.exc import DBAPIError, SQLAlchemyError
 
 COMMANDS = {
     "validate": "pipeline.validate",
@@ -35,6 +38,17 @@ COMMANDS = {
 }
 
 
+def _describe(exc: Exception) -> str:
+    """One readable line: no traceback, and never the SQL or bound parameters."""
+    if isinstance(exc, DBAPIError) and exc.orig is not None:
+        return f"database error: {exc.orig}"
+    if isinstance(exc, SQLAlchemyError):
+        return f"database error: {str(exc).splitlines()[0]}"
+    if isinstance(exc, KeyError) and exc.args:
+        return f"error: {exc.args[0]}"
+    return f"error: {exc}"
+
+
 def main(argv: list[str] | None = None) -> int:
     argv = sys.argv[1:] if argv is None else argv
     if not argv or argv[0] in ("-h", "--help"):
@@ -43,7 +57,13 @@ def main(argv: list[str] | None = None) -> int:
     if argv[0] not in COMMANDS:
         print(f"unknown command {argv[0]!r}\n\n{__doc__.strip()}", file=sys.stderr)
         return 2
-    return importlib.import_module(COMMANDS[argv[0]]).main(argv[1:])
+    try:
+        return importlib.import_module(COMMANDS[argv[0]]).main(argv[1:])
+    except (FileNotFoundError, ValueError, KeyError, SQLAlchemyError) as exc:
+        if os.environ.get("VIBECHECK_DEBUG"):  # keep the full traceback when debugging
+            raise
+        print(_describe(exc), file=sys.stderr)
+        return 1
 
 
 if __name__ == "__main__":
