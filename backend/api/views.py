@@ -39,6 +39,11 @@ class DashboardKPIsView(APIView):
         df_onb = fetch_table_as_df("onboarding")
         df_tickets = fetch_table_as_df("support_tickets")
         
+        start_date = request.GET.get('start_date')
+        end_date = request.GET.get('end_date')
+        if start_date and end_date and 'start_date' in df_onb.columns:
+            df_onb = df_onb[(df_onb['start_date'] >= start_date) & (df_onb['start_date'] <= end_date)]
+            
         onb_days_clean = pd.to_numeric(df_onb['onboarding_days'], errors='coerce').dropna()
         avg_onboarding_days = float(onb_days_clean.mean()) if not onb_days_clean.empty else 0.0
         
