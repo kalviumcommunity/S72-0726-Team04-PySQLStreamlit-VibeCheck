@@ -22,5 +22,6 @@ them in order with **Create a merge commit** so every later PR shows only its ow
 | 12 | `gaurav/day-12-delay-root-causes` | 12 | Root-cause investigation for delayed onboarding | [doc](day-12-delay-root-causes.md) |
 | 13 | `gaurav/day-13-sql-onboarding-kpis` | 13 | SQL layer: MySQL-ready engine and onboarding KPI queries | [doc](day-13-sql-onboarding-kpis.md) |
 | 14 | `gaurav/day-14-sql-window-rankings` | 15 | Rank hires by onboarding speed with SQL window functions | [doc](day-14-sql-window-rankings.md) |
+| 15 | `gaurav/day-15-sql-python-reconciliation` | 16 | Validate SQL outputs against the Python pipeline | [doc](day-15-sql-python-reconciliation.md) |
 
 Compare link pattern: `https://github.com/kalviumcommunity/S72-0726-Team04-PySQLStreamlit-VibeCheck/compare/main...<branch>`
