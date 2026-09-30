@@ -32,5 +32,6 @@ them in order with **Create a merge commit** so every later PR shows only its ow
 | 22 | `gaurav/day-22-dashboard-alerts` | 24 | Integrate alerts into the dashboard | [doc](day-22-dashboard-alerts.md) |
 | 23 | `gaurav/day-23-e2e-pipeline-tests` | 25 | End-to-end tests of the automated pipeline | [doc](day-23-e2e-pipeline-tests.md) |
 | 24 | `gaurav/day-24-finalise-workflows` | 26 | Finalise GitHub workflows: test matrix, MySQL job, scheduled report | [doc](day-24-finalise-workflows.md) |
+| 25 | `gaurav/day-25-bug-fixes` | 28 | Bug fixes: clean CLI errors, Supabase row cap, optional supabase; project documentation | [doc](day-25-bug-fixes.md) |
 
 Compare link pattern: `https://github.com/kalviumcommunity/S72-0726-Team04-PySQLStreamlit-VibeCheck/compare/main...<branch>`

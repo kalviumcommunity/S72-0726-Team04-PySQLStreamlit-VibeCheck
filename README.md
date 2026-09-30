@@ -77,3 +77,22 @@ S72-0726-Team04-PySQLStreamlit-VibeCheck/
 │   └── src/lib/             # API utility functions
 └── data/                    # Datasets (used as local fallback)
 ```
+
+---
+
+## 🧪 Data Pipeline & Onboarding Ops Console (Python)
+
+Alongside the Django + Next.js dashboard, `pipeline/` holds the Python data pipeline and MySQL-ready SQL layer, and
+`streamlit_app/` an operations console built on it.
+
+```bash
+pip install -r requirements-pipeline.txt
+python -m pipeline validate                     # schema contracts, data dictionary, SQL vs Python
+python -m pipeline export                       # cleaned data, analysis tables, charts -> outputs/
+python -m pipeline alerts                       # hires whose onboarding needs attention
+streamlit run streamlit_app/onboarding_ops.py   # KPI cards, cohorts, root causes, live alerts
+pytest                                          # pipeline, dashboard and end-to-end tests
+```
+
+Set `VIBECHECK_DB_URL=mysql+pymysql://user:password@host:3306/vibecheck` to run the SQL queries against MySQL.
+Full documentation: [`docs/PROJECT_DOCUMENTATION.md`](docs/PROJECT_DOCUMENTATION.md) · PR log: [`docs/prs/`](docs/prs/README.md).
