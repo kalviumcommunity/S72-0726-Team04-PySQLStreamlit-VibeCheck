@@ -156,6 +156,7 @@ class EmployeeDetailView(APIView):
             "buddy_assigned": str(onb_info.get("buddy_assigned", "N/A")),
             "friction_score": float(round(friction_score, 1)),
             "predicted_risk": float(round(predicted_risk, 1)),
+            "metrics": {"total_tickets": ticket_count, "avg_resolution_hrs": float(round(avg_res, 1))},
             "tickets": tickets_list,
             "tool_usage": tools_list
         }
