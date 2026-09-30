@@ -107,8 +107,10 @@ class EmployeeFrictionTableView(APIView):
         ml_preds = get_ml_predictions()
         merged = pd.merge(merged, ml_preds, on='employee_id', how='left').fillna({'predicted_risk': 0})
         
-        # Calculate friction_score: (Ticket Count * 10) + (Avg Resolution Hours * 2) - (Training % * 0.5)
-        merged['friction_score'] = (merged['ticket_count'] * 10) + (merged['avg_resolution'] * 2) - (merged['training_completion_percent'] * 0.5)
+        t_w = float(os.getenv('FRICTION_TICKET_WEIGHT', 10.0))
+        r_w = float(os.getenv('FRICTION_RES_WEIGHT', 2.0))
+        tr_w = float(os.getenv('FRICTION_TRAIN_WEIGHT', 0.5))
+        merged['friction_score'] = (merged['ticket_count'] * t_w) + (merged['avg_resolution'] * r_w) - (merged['training_completion_percent'] * tr_w)
         
         # Clamp between 0 and 100
         merged['friction_score'] = merged['friction_score'].clip(lower=0, upper=100)
