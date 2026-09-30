@@ -102,7 +102,12 @@ class EmployeeFrictionTableView(APIView):
         # Clamp between 0 and 100
         merged['friction_score'] = merged['friction_score'].clip(lower=0, upper=100)
         
-        merged = merged.sort_values(by='friction_score', ascending=False)
+        sort_by = request.GET.get('sort_by', 'friction_score')
+        sort_desc = request.GET.get('sort_desc', 'true').lower() == 'true'
+        if sort_by in merged.columns:
+            merged = merged.sort_values(by=sort_by, ascending=not sort_desc)
+        else:
+            merged = merged.sort_values(by='friction_score', ascending=False)
         return Response(merged.head(100).to_dict('records'))
 
 class EmployeeDetailView(APIView):
