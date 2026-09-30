@@ -13,5 +13,6 @@ them in order with **Create a merge commit** so every later PR shows only its ow
 | 03 | `gaurav/day-03-onboarding-cleaning` | 3 | Add reusable cleaning functions for onboarding data | [doc](day-03-onboarding-cleaning.md) |
 | 04 | `gaurav/day-04-type-standardisation` | 4 | Standardise onboarding dates, Yes/No flags and status categories | [doc](day-04-type-standardisation.md) |
 | 05 | `gaurav/day-05-data-dictionary` | 5 | Add a code-backed data dictionary for onboarding fields | [doc](day-05-data-dictionary.md) |
+| 06 | `gaurav/day-06-completion-outliers` | 6 | Detect outliers in onboarding completion times (IQR and MAD) | [doc](day-06-completion-outliers.md) |
 
 Compare link pattern: `https://github.com/kalviumcommunity/S72-0726-Team04-PySQLStreamlit-VibeCheck/compare/main...<branch>`
