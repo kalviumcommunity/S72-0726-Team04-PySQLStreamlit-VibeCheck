@@ -156,3 +156,10 @@ class EmployeeDetailView(APIView):
             "tool_usage": tools_list
         }
         return Response(detail)
+
+class BuddyStatsView(APIView):
+    def get(self, request):
+        df = fetch_table_as_df("onboarding")
+        if df.empty: return Response({})
+        impact = df.groupby('buddy_assigned').agg(avg_training=('training_completion_percent', 'mean'), count=('employee_id', 'count')).reset_index()
+        return Response(impact.to_dict('records'))
