@@ -4,6 +4,8 @@ from .utils import fetch_table_as_df
 import pandas as pd
 import os
 import pickle
+import logging
+logger = logging.getLogger(__name__)
 
 ML_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), "ML model")
 MODEL_PATH = os.path.join(ML_DIR, "best_model.pkl")
@@ -21,7 +23,7 @@ def get_ml_predictions() -> pd.DataFrame:
             ml_data['predicted_risk'] = ml_model.predict_proba(X)[:, 1] * 100
             return ml_data[['employee_id', 'predicted_risk']]
     except Exception as e:
-        print(f"Notice: Standard ML model predict_proba skipped ({e}), utilizing risk scores dataset.")
+        logger.warning(f"ML model execution failed: {e}. Falling back to CSV.")
 
     if os.path.exists(RISK_SCORES_PATH):
         try:
@@ -32,11 +34,20 @@ def get_ml_predictions() -> pd.DataFrame:
 
     return pd.DataFrame(columns=['employee_id', 'predicted_risk'])
 
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
+
 class DashboardKPIsView(APIView):
+    @method_decorator(cache_page(60 * 15))
     def get(self, request):
         df_onb = fetch_table_as_df("onboarding")
         df_tickets = fetch_table_as_df("support_tickets")
         
+        start_date = request.GET.get('start_date')
+        end_date = request.GET.get('end_date')
+        if start_date and end_date and 'start_date' in df_onb.columns:
+            df_onb = df_onb[(df_onb['start_date'] >= start_date) & (df_onb['start_date'] <= end_date)]
+            
         onb_days_clean = pd.to_numeric(df_onb['onboarding_days'], errors='coerce').dropna()
         avg_onboarding_days = float(onb_days_clean.mean()) if not onb_days_clean.empty else 0.0
         
@@ -93,16 +104,27 @@ class EmployeeFrictionTableView(APIView):
         
         merged = pd.merge(df_emp[['employee_id', 'JobRole', 'Department']], df_onb[['employee_id', 'onboarding_status', 'training_completion_percent']], on='employee_id')
         merged = pd.merge(merged, ticket_stats, on='employee_id', how='left').fillna(0)
+        manager = request.GET.get('manager_assigned')
+        if manager:
+            if 'manager_assigned' in merged.columns:
+                merged = merged[merged['manager_assigned'].str.lower() == manager.lower()]
         ml_preds = get_ml_predictions()
         merged = pd.merge(merged, ml_preds, on='employee_id', how='left').fillna({'predicted_risk': 0})
         
-        # Calculate friction_score: (Ticket Count * 10) + (Avg Resolution Hours * 2) - (Training % * 0.5)
-        merged['friction_score'] = (merged['ticket_count'] * 10) + (merged['avg_resolution'] * 2) - (merged['training_completion_percent'] * 0.5)
+        t_w = float(os.getenv('FRICTION_TICKET_WEIGHT', 10.0))
+        r_w = float(os.getenv('FRICTION_RES_WEIGHT', 2.0))
+        tr_w = float(os.getenv('FRICTION_TRAIN_WEIGHT', 0.5))
+        merged['friction_score'] = (merged['ticket_count'] * t_w) + (merged['avg_resolution'] * r_w) - (merged['training_completion_percent'] * tr_w)
         
         # Clamp between 0 and 100
         merged['friction_score'] = merged['friction_score'].clip(lower=0, upper=100)
         
-        merged = merged.sort_values(by='friction_score', ascending=False)
+        sort_by = request.GET.get('sort_by', 'friction_score')
+        sort_desc = request.GET.get('sort_desc', 'true').lower() == 'true'
+        if sort_by in merged.columns:
+            merged = merged.sort_values(by=sort_by, ascending=not sort_desc)
+        else:
+            merged = merged.sort_values(by='friction_score', ascending=False)
         return Response(merged.head(100).to_dict('records'))
 
 class EmployeeDetailView(APIView):
@@ -112,6 +134,9 @@ class EmployeeDetailView(APIView):
         df_tickets = fetch_table_as_df("support_tickets")
         df_tools = fetch_table_as_df("tool_usage")
         ml_preds = get_ml_predictions()
+
+        if df_emp.empty or df_onb.empty:
+            return Response({"error": "Core datasets missing"}, status=503)
 
         emp_row = df_emp[df_emp['employee_id'] == employee_id]
         if emp_row.empty:
@@ -152,7 +177,18 @@ class EmployeeDetailView(APIView):
             "buddy_assigned": str(onb_info.get("buddy_assigned", "N/A")),
             "friction_score": float(round(friction_score, 1)),
             "predicted_risk": float(round(predicted_risk, 1)),
+            "metrics": {"total_tickets": ticket_count, "avg_resolution_hrs": float(round(avg_res, 1))},
             "tickets": tickets_list,
             "tool_usage": tools_list
         }
         return Response(detail)
+
+class DepartmentKPIsView(APIView):
+    def get(self, request):
+        df_emp = fetch_table_as_df("employees")
+        df_onb = fetch_table_as_df("onboarding")
+        if df_emp.empty or df_onb.empty: return Response([])
+        merged = pd.merge(df_emp, df_onb, on='employee_id')
+        dept_kpis = merged.groupby('Department')['training_completion_percent'].mean().reset_index()
+        dept_kpis.columns = ['department', 'avg_training_percent']
+        return Response(dept_kpis.to_dict('records'))

@@ -7,6 +7,13 @@ from rest_framework import status
 
 from . import utils
 
+class DashboardKPIsTest(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+    def test_get_kpis(self):
+        response = self.client.get('/api/kpis/')
+        self.assertEqual(response.status_code, 200)
+
 class AnalyticsApiTests(TestCase):
     def setUp(self):
         self.client = APIClient()
@@ -26,6 +33,10 @@ class AnalyticsApiTests(TestCase):
         self.assertIn('blockers', response.data)
         self.assertIn('tool_adoption', response.data)
         self.assertIn('buddy_impact', response.data)
+
+    def test_employee_friction_table(self):
+        response = self.client.get('/api/employees/?limit=10')
+        self.assertEqual(response.status_code, 200)
 
     def test_employees_endpoint(self):
         response = self.client.get('/api/employees/')
