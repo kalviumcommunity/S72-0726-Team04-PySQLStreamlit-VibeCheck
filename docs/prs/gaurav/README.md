@@ -20,5 +20,6 @@ them in order with **Create a merge commit** so every later PR shows only its ow
 | 10 | `gaurav/day-10-completion-distribution` | 10 | Distribution analysis of onboarding completion times | [doc](day-10-completion-distribution.md) |
 | 11 | `gaurav/day-11-fast-vs-slow-behaviour` | 11 | Behavioural analysis of new hires: fast vs slow onboarders | [doc](day-11-fast-vs-slow-behaviour.md) |
 | 12 | `gaurav/day-12-delay-root-causes` | 12 | Root-cause investigation for delayed onboarding | [doc](day-12-delay-root-causes.md) |
+| 13 | `gaurav/day-13-sql-onboarding-kpis` | 13 | SQL layer: MySQL-ready engine and onboarding KPI queries | [doc](day-13-sql-onboarding-kpis.md) |
 
 Compare link pattern: `https://github.com/kalviumcommunity/S72-0726-Team04-PySQLStreamlit-VibeCheck/compare/main...<branch>`
