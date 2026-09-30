@@ -32,7 +32,11 @@ def get_ml_predictions() -> pd.DataFrame:
 
     return pd.DataFrame(columns=['employee_id', 'predicted_risk'])
 
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
+
 class DashboardKPIsView(APIView):
+    @method_decorator(cache_page(60 * 15))
     def get(self, request):
         df_onb = fetch_table_as_df("onboarding")
         df_tickets = fetch_table_as_df("support_tickets")
